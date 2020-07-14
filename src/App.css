@@ -1,38 +1,32 @@
-.App {
-  text-align: center;
+body {
+  background-color: black !important;
+  color: grey !important;
+  font-family: "Font Awesome 5 Free" !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.navbar-dark {
+	background-color: black;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.navbar-brand a {
+	color: grey;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.navbar-brand a:hover {
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.navbar .navbar-brand {
+  color: #c8c8c8;
+  font-size: 2em;
+  margin-left: 0;
+  padding-left: 0; 
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.navbar {
+  font-size: 20px;
+  background-color: rgba(17, 17, 17, 0);
+  border-bottom-width: 0px; 
 }
+
+  
