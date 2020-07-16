@@ -5,7 +5,7 @@ import * as Chess from "chess.js";
 import Chessboard from "chessboardjsx";
 // import { render } from "@testing-library/react";
 
-class HumanVsHuman extends Component {
+class Board extends Component {
 	//   static propTypes = { children: PropTypes.func };
 	constructor(props) {
 		super(props);
@@ -188,7 +188,7 @@ export default function MoveValidation(props) {
 	console.log(props);
 	return (
 		<React.Fragment>
-			<HumanVsHuman>
+			<Board>
 				{({
 					position,
 					orientation,
@@ -203,7 +203,6 @@ export default function MoveValidation(props) {
 				}) => (
 					<Chessboard
 						id="humanVsHuman"
-						// width={boardWidth}
 						orientation={orientation}
 						width={props.boardWidth}
 						position={position}
@@ -213,6 +212,7 @@ export default function MoveValidation(props) {
 						boardStyle={{
 							borderRadius: "5px",
 							boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`,
+							// max-width: '100%'
 						}}
 						squareStyles={squareStyles}
 						dropSquareStyle={dropSquareStyle}
@@ -224,7 +224,7 @@ export default function MoveValidation(props) {
 						darkSquareStyle={{ backgroundColor: "#86A666" }}
 					/>
 				)}
-			</HumanVsHuman>
+			</Board>
 		</React.Fragment>
 	);
 }

@@ -5,11 +5,11 @@ body {
 }
 
 .navbar-dark {
-	background-color: black;
+  background-color: black;
 }
 
 .navbar-brand a {
-	color: grey;
+  color: grey;
 }
 
 .navbar-brand a:hover {
@@ -20,20 +20,27 @@ body {
   color: #c8c8c8;
   font-size: 2em;
   margin-left: 0;
-  padding-left: 0; 
+  padding-left: 0;
 }
 
 .navbar {
   font-size: 20px;
   background-color: rgba(17, 17, 17, 0);
-  border-bottom-width: 0px; 
+  border-bottom-width: 0px;
 }
 
-/* #humanVsHuman{
-  width:100px !important;
-} */
-
-.testing{
-  width:100px !important;
+.actionButtons {
+  border: solid rgba(200, 200, 200, 0.5) 1px;
+  border-radius: var(--border-radius);
 }
-  
+
+.fa-flipboard,
+.fa-edit,
+.fa-chess-board,
+.fa-undo-alt,
+.fa-chess-knight,
+.fa-chess-king,
+.fa-trash-alt,
+.fa-arrows-alt-v {
+  font-size: 30px;
+}
