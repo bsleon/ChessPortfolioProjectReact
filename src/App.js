@@ -7,7 +7,7 @@ import Header from "./components/HeaderComponent";
 import { Switch, Route, Redirect, BrowserRouter } from "react-router-dom";
 import Home from "./components/HomeComponent";
 import PlayComputer from "./components/PlayComputerComponent";
-import Contact from "./components/ContactMe";
+import Contact from "./components/ContactMeComponent";
 
 function App() {
 	return (

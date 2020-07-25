@@ -2,7 +2,7 @@ import React, { Component } from "react";
 // import Chessboard from "chessboardjsx";
 // import { Chess } from "chess.js";
 // import * as Chess from 'chess.js';
-import Board from "./Board";
+import Board from "./BoardComponent";
 
 class Home extends Component {
 	constructor(props) {
@@ -46,9 +46,7 @@ class Home extends Component {
 			<React.Fragment>
 				<div className="container">
 					<div className="row">
-						<div className="col-12 col-md-8 m-0 p-0">
-							<Board boardWidth={this.state.boardWidth} />
-						</div>
+						<Board boardWidth={this.state.boardWidth} />
 					</div>
 				</div>
 			</React.Fragment>

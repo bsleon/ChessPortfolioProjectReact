@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import * as Chess from "chess.js";
 import Chessboard from "chessboardjsx";
 import OpeningStats from "./OpeningStatsComponent";
+import { Fade } from "react-animation-components";
+import History from "./HistoryComponent";
 
-class PlayComputer extends Component {
+class Board extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -38,8 +40,8 @@ class PlayComputer extends Component {
 
 	undoMove = () => {
 		this.game.undo();
-        let i = 0;
-        let arr = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
+		let i = 0;
+		let arr = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
 		if (this.state.fensIndex > 0) {
 			i = this.state.fensIndex - 1;
 			arr = [...this.state.fensArray];
@@ -161,7 +163,7 @@ class PlayComputer extends Component {
 			<React.Fragment>
 				<div className="container">
 					<div className="row">
-						<div className="col-12">
+						<div className="col-8">
 							<Chessboard
 								position={this.state.position}
 								orientation={this.state.orientation}
@@ -174,12 +176,18 @@ class PlayComputer extends Component {
 								}}
 								darkSquareStyle={{ backgroundColor: "#86A666" }}
 								transitionDuration={150}
+								width={650}
 							/>
 						</div>
+
+						<div className="col-4">
+							<History history={this.state.history}/>
+						</div>
+
 					</div>
 
 					<div className="row">
-						<div className="col-6">
+						<div className="col-7">
 							<div
 								id="playthroughButtons"
 								className="text-center"
@@ -221,7 +229,7 @@ class PlayComputer extends Component {
 					</div>
 
 					<div className="row">
-						<div className="col-6">
+						<div className="col-7">
 							<div id="actionButtons" className="text-center">
 								<span
 									type="button"
@@ -292,10 +300,17 @@ class PlayComputer extends Component {
 							</div>
 						</div>
 					</div>
+					<Fade in>
+						<div className="row mt-5">
+							<div className="col-8">
+								<OpeningStats fen={this.state.fen} />
+							</div>
+						</div>
+					</Fade>
 				</div>
 			</React.Fragment>
 		);
 	}
 }
 
-export default PlayComputer;
+export default Board;

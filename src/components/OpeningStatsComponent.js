@@ -7,11 +7,12 @@ class OpeningStats extends Component {
 		super(props);
 		this.state = {
 			movesList: [],
+			openingName: "",
 		};
 	}
 
 	searchOpening = async (nextProps) => {
-        let fenURL = nextProps;
+		let fenURL = nextProps;
 		if (nextProps == null) {
 			fenURL = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		}
@@ -21,13 +22,9 @@ class OpeningStats extends Component {
 	};
 
 	displayOpeningsInfo = async (nextProps) => {
-		// let openingTitle = "";
 		let openingInfo = await this.searchOpening(nextProps);
 		let openingTitle = "";
 		let movesArray = [];
-
-		// console.log("Props2: " + this.props.fen);
-		// console.log(openingInfo);
 
 		if (openingInfo.opening != null) {
 			openingTitle =
@@ -35,6 +32,10 @@ class OpeningStats extends Component {
 		} else if (nextProps === "start") {
 			openingTitle = "";
 		}
+
+		this.setState({
+			openingName: openingTitle,
+		});
 
 		for (let i = 0; i < openingInfo.moves.length; ++i) {
 			// for (let i = 0; i < 2; ++i) {
@@ -54,23 +55,26 @@ class OpeningStats extends Component {
 			const str = `
                 <div class="row">
                     <div class="col-1 p-0">
-                    ${openingInfo.moves[i].san}
+                        ${openingInfo.moves[i].san}
                     </div>
                     <div class="col-2 p-0">
-                    ${totalGames
-						.toString()
-						.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                        ${totalGames
+							.toString()
+							.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     </div>
                     <div class="col-2 p-0">
-                    ${openingInfo.moves[i].averageRating}
+                        ${openingInfo.moves[i].averageRating}
                     </div>
                     <div class="progress col-7 p-0">
                         <div class="progress-bar bg-light" role="progressbar" style="width:${whitePerc}%; color:black" aria-valuenow="${whitePerc}" aria-valuemin="0"
-                        aria-valuemax="100">${whitePerc}%</div>
+                            aria-valuemax="100">${whitePerc}%
+                        </div>
                         <div class="progress-bar bg-secondary" role="progressbar" style="width:${drawsPerc}%" aria-valuenow="${drawsPerc}"
-                        aria-valuemin="0" aria-valuemax="100">${drawsPerc}%</div>
+                            aria-valuemin="0" aria-valuemax="100">${drawsPerc}%
+                        </div>
                         <div class="progress-bar bg-dark" role="progressbar" style="width:${blackPerc}%" aria-valuenow="{blackPerc}" aria-valuemin="0"
-                        aria-valuemax="100">${blackPerc}% </div>
+                            aria-valuemax="100">${blackPerc}% 
+                        </div>
                     </div>
                     
                 </div>
@@ -118,6 +122,9 @@ class OpeningStats extends Component {
 		// console.log(this.state.movesList);
 		return (
 			<React.Fragment>
+				<div class="row ml-0 p-0">
+					<h5>{this.state.openingName}</h5>
+				</div>
 				<div className="row mb-3 ml-0 p-0" id="openingsInfoHeader">
 					<div className="col-1 p-0 m-0">Move</div>
 					<div className="col-2 p-0 m-0">Total Games</div>
