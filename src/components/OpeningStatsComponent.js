@@ -29,9 +29,10 @@ class OpeningStats extends Component {
 		if (openingInfo.opening != null) {
 			openingTitle =
 				openingInfo.opening.eco + " " + openingInfo.opening.name;
-		} else if (nextProps === "start") {
+		} else if (this.props.fen === "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") {
 			openingTitle = "";
-		}
+        }
+        
 
 		this.setState({
 			openingName: openingTitle,
