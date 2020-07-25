@@ -4,6 +4,10 @@ body {
   font-family: "Font Awesome 5 Free" !important;
 }
 
+#loginButton{
+  border-color: transparent;
+}
+
 .navbar-dark {
   background-color: black;
 }

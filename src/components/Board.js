@@ -4,15 +4,22 @@ import React, { Component } from "react";
 import * as Chess from "chess.js";
 import Chessboard from "chessboardjsx";
 // import { render } from "@testing-library/react";
+import OpeningStats from "./OpeningStatsComponent";
+import { Fade } from "react-animation-components";
 
 class Board extends Component {
 	//   static propTypes = { children: PropTypes.func };
 	constructor(props) {
 		super(props);
 		this.state = {
+			position:
+				"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+
 			orientation: "white",
 
-			fen: "start",
+			undo: false,
+
+			fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
 
 			// square styles for active drop square
 			dropSquareStyle: {},
@@ -31,21 +38,76 @@ class Board extends Component {
 		};
 	}
 
-	orientation = () => {
-		if (this.state.orientation === "white") {
-			this.setState(({ orientation }) => ({
-				orientation: "black",
-			}));
-		} else
-			this.setState(({ orientation }) => ({
-				orientation: "white",
-			}));
-		// console.log(this.state.orientation);
-	};
-
 	componentDidMount() {
 		this.game = new Chess();
 	}
+
+	setPosition = () => {
+		this.setState({ fen: this.game.fen() });
+	  };
+
+	flipBoard = () => {
+		if (this.state.orientation === "white") {
+			this.setState({
+				orientation: "black",
+			});
+		} else
+			this.setState({
+				orientation: "white",
+			});
+		// console.log(this.state.orientation);
+	};
+
+	newGame = () => {
+		this.game = new Chess();
+		this.setState({
+			fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+			position: this.game.fen(),
+			history: [],
+			dropSquareStyle: {},
+			squareStyles: {},
+			pieceSquare: "",
+			square: "",
+			// undo: true
+		});
+		this.removeHighlightSquare();
+		console.log(this.game.history());
+		console.log(this.game);
+	};
+
+	undoMove = () => {
+		// console.log("Position before: " + this.state.position);
+		// console.log("Game fen before: " + this.game.fen());
+		// this.chess.undo();
+		this.game.undo();
+		this.setPosition();
+
+
+		// this.setState(({ history, pieceSquare }) => {
+		// 	return {
+		// 		// position: this.game.fen(),
+		// 		fen: this.game.fen(),
+		// 		undo: true,
+		// 		history: this.game.history({ verbose: true }),
+		// 		squareStyles: squareStyling({ pieceSquare, history })
+		// 	};
+		// });
+
+
+
+		// this.setState({
+		// 	position: this.game.fen(),
+		// 	// undo: true
+		// 	fen: this.game.fen(),
+		// 	history: this.game.history({ verbose: true }),
+		// 	// dropSquareStyle: {},
+		// 	// squareStyles: {},
+		// });
+		// console.log("UNDO");
+		// console.log(this.game.history());
+		// console.log("Position after: " + this.state.position);
+		// console.log("Game fen after: " + this.game.fen());
+	};
 
 	// keep clicked square style and remove hint squares
 	removeHighlightSquare = () => {
@@ -95,7 +157,12 @@ class Board extends Component {
 			fen: this.game.fen(),
 			history: this.game.history({ verbose: true }),
 			squareStyles: squareStyling({ pieceSquare, history }),
+			position: this.game.fen(),
 		}));
+
+		this.removeHighlightSquare(sourceSquare);
+
+		console.log(this.game.history());
 	};
 
 	//   onMouseOverSquare = square => {
@@ -116,7 +183,8 @@ class Board extends Component {
 	//     this.highlightSquare(square, squaresToHighlight);
 	//   };
 
-	onMouseOutSquare = (square) => this.removeHighlightSquare(square);
+	// onMouseOutSquare = (square) => this.removeHighlightSquare(square);
+	// onDrop = (square) => this.removeHighlightSquare(square);
 
 	// central squares get diff dropSquareStyles
 	//   onDragOverSquare = square => {
@@ -129,7 +197,7 @@ class Board extends Component {
 	//     });
 	//   };
 
-	onSquareClick = (square) => {
+	onSquareClick = (square, sourceSquare) => {
 		this.setState(({ history }) => ({
 			squareStyles: squareStyling({ pieceSquare: square, history }),
 			pieceSquare: square,
@@ -143,6 +211,7 @@ class Board extends Component {
 
 		// illegal move
 		if (move === null) return;
+		// else this.removeHighlightSquare(sourceSquare);
 
 		this.setState({
 			fen: this.game.fen(),
@@ -156,25 +225,145 @@ class Board extends Component {
 			squareStyles: { [square]: { backgroundColor: "deepPink" } },
 			// orientation: "black"
 		});
-		this.orientation();
 	};
 
 	render() {
-		const { orientation, fen, dropSquareStyle, squareStyles } = this.state;
-
-		return this.props.children({
-			squareStyles,
-			orientation: orientation,
-			position: fen,
-			onMouseOverSquare: this.onMouseOverSquare,
-			onMouseOutSquare: this.onMouseOutSquare,
-			onDrop: this.onDrop,
+		const {
+			position,
+			orientation,
+			undo,
+			fen,
 			dropSquareStyle,
-			onDragOverSquare: this.onDragOverSquare,
-			onSquareClick: this.onSquareClick,
-			onSquareRightClick: this.onSquareRightClick,
-			// orientation: this.orientation
-		});
+			squareStyles,
+		} = this.state;
+		// console.log("CHILDREN: " + this.state.fen);
+		return [
+			this.props.children({
+				squareStyles,
+				orientation: orientation,
+				undo: undo,
+				position: position,
+				onMouseOverSquare: this.onMouseOverSquare,
+				onMouseOutSquare: this.onMouseOutSquare,
+				onDrop: this.onDrop,
+				dropSquareStyle,
+				onDragOverSquare: this.onDragOverSquare,
+				// onSquareClick: this.onSquareClick,
+				onSquareRightClick: this.onSquareRightClick,
+				// orientation: this.orientation
+			}),
+
+			<React.Fragment>
+				{/* Playthrough Buttons */}
+				<div id="playthroughButtons" className="text-center">
+					<span
+						type="button"
+						className="btn btn-default"
+						id="startPositionBtn"
+					>
+						<i className="fas fa-fast-backward"></i>
+					</span>
+					<span
+						type="button"
+						className="btn btn-default"
+						id="prevBtn"
+					>
+						<i className="fas fa-backward"></i>
+					</span>
+					<span
+						type="button"
+						className="btn btn-default"
+						id="nextBtn"
+					>
+						<i className="fas fa-forward"></i>
+					</span>
+					<span
+						type="button"
+						className="btn btn-default"
+						id="endPositionBtn"
+					>
+						<i className="fas fa-fast-forward"></i>
+					</span>
+				</div>
+
+				{/* Action Buttons */}
+				<div id="actionButtons" className="text-center">
+					<span
+						type="button"
+						className="btn btn-default"
+						id="clearBoardBtn"
+						data-toggle="tooltip"
+						data-placement="top"
+						title="Clear Board"
+						style={{ display: "none" }}
+					>
+						<i className="fas fa-trash-alt"></i>
+					</span>
+					<span
+						type="button"
+						className="btn btn-default"
+						id="startBoardBtn"
+						data-toggle="tooltip"
+						data-placement="top"
+						title="Start Board"
+						style={{ display: "none" }}
+					>
+						<i className="fas fa-chess-board"></i>
+					</span>
+					<span
+						type="button"
+						className="btn btn-default"
+						id="undoMoveBtn"
+						data-toggle="tooltip"
+						data-placement="top"
+						title="Undo Move"
+						onClick={this.undoMove}
+					>
+						<i className="fas fa-undo-alt"></i>
+					</span>
+					<span
+						type="button"
+						className="btn btn-default"
+						id="newGameBtn"
+						data-toggle="tooltip"
+						data-placement="top"
+						title="New Game"
+						onClick={this.newGame}
+					>
+						<i className="fas fa-chess-board"></i>
+					</span>
+					<span
+						type="button"
+						className="btn btn-default"
+						id="flipBoardBtn"
+						data-toggle="tooltip"
+						data-placement="top"
+						title="Flip Board"
+						onClick={this.flipBoard}
+					>
+						<i className="fas fa-arrows-alt-v"></i>
+					</span>
+					<span
+						type="button"
+						className="btn btn-default"
+						id="setupBoardBtn"
+						data-toggle="tooltip"
+						data-placement="top"
+						title="Edit Board"
+					>
+						<i className="far fa-edit"></i>
+					</span>
+				</div>
+
+				<Fade in>
+					{/* <div className="row"> */}
+					{/* <div className="col-12"> */}
+					<OpeningStats fen={this.state.fen} />
+					{/* </div> */}
+					{/* </div> */}
+				</Fade>
+			</React.Fragment>,
+		];
 	}
 }
 
@@ -185,11 +374,12 @@ class Board extends Component {
 // })
 
 export default function MoveValidation(props) {
-	console.log(props);
+	// console.log(this.game);
 	return (
 		<React.Fragment>
 			<Board>
 				{({
+					undo,
 					position,
 					orientation,
 					onDrop,
@@ -198,10 +388,11 @@ export default function MoveValidation(props) {
 					squareStyles,
 					dropSquareStyle,
 					onDragOverSquare,
-					onSquareClick,
+					// onSquareClick,
 					onSquareRightClick,
 				}) => (
 					<Chessboard
+						undo={undo}
 						id="humanVsHuman"
 						orientation={orientation}
 						width={props.boardWidth}
@@ -217,7 +408,7 @@ export default function MoveValidation(props) {
 						squareStyles={squareStyles}
 						dropSquareStyle={dropSquareStyle}
 						onDragOverSquare={onDragOverSquare}
-						onSquareClick={onSquareClick}
+						// onSquareClick={onSquareClick}
 						onSquareRightClick={onSquareRightClick}
 						// darkSquareStyle={{ backgroundColor: "rgb(100,100,100)" }}
 						lightSquareStyle={{ backgroundColor: "#FFFFDD" }}
