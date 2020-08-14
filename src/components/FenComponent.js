@@ -1,27 +1,27 @@
 import React, { Component } from "react";
 import { Button, Form, FormGroup, Label, Input, Col } from "reactstrap";
 
-class Pgn extends Component {
-	// onChangeTextHandler(text) {
-	// 	this.setState({ pgnValue: text.target.value });
-	// 	console.log(this.state.pgnValue);
-	// }
+class Fen extends Component {
+	onChangeTextHandler(text) {
+		this.setState({ fenValue: text.target.value });
+		console.log(this.state.fenValue);
+	}
 
 	render() {
 		return (
 			<Form>
 				<FormGroup>
 					<Label htmlFor="feedback" md={4}>
-						PGN
+						FEN
 					</Label>
 					<Col md={15}>
 						<Input
 							type="textarea"
-							id="pgn"
-							name="pgn"
+							id="fen"
+							name="fen"
 							rows="3"
 							onChange={(text) =>
-								this.props.onChangePgnHandler(text)
+								this.props.onChangeFenHandler(text)
 							}
 						></Input>
 					</Col>
@@ -29,9 +29,9 @@ class Pgn extends Component {
 						<Button
 							type="button"
 							color="secondary"
-							onClick={() => this.props.onPgnSubmit()}
+							onClick={() => this.props.onFenSubmit()}
 						>
-							Import PGN
+							Import FEN
 						</Button>
 					</Col>
 				</FormGroup>
@@ -40,4 +40,4 @@ class Pgn extends Component {
 	}
 }
 
-export default Pgn;
+export default Fen;

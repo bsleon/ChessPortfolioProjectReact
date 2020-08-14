@@ -5,6 +5,7 @@ import OpeningStats from "./OpeningStatsComponent";
 import { Fade } from "react-animation-components";
 import History from "./HistoryComponent";
 import Pgn from "./PgnComponent";
+import Fen from "./FenComponent";
 
 class Board extends Component {
 	constructor(props) {
@@ -36,6 +37,7 @@ class Board extends Component {
 			clearBtnDisplay: { display: "none" },
 			undoBtnDisplay: { display: "initial" },
 			pgnValue: [],
+			fenValue: "",
 		};
 	}
 
@@ -49,35 +51,42 @@ class Board extends Component {
 		}));
 	}
 
-	onChangeTextHandler(text) {
+	onChangePgnHandler(text) {
 		let arr = [text.target.value];
 		this.setState({ pgnValue: [...arr] });
-		// console.log(this.state.pgnValue);
+	}
+
+	onChangeFenHandler(text) {
+		let fen = text.target.value;
+		this.setState({ fenValue: fen });
 	}
 
 	onPgnSubmit() {
-		// console.log("PGN SUBMITTED!!!!!!");
 		let pgn = [this.state.pgnValue].join("\n");
-		// var pgn = [
-		// 	'[Event "?"]',
-		// 	'[Site "?"]',
-		// 	'[Date "2015.11.26"]',
-		// 	'[Round "?"]',
-		// 	'[White "New game"]',
-		// 	'[Black "?"]',
-		// 	'[Result "*"]',
-		// 	'[ECO "C31"]',
-		// 	'[PlyCount "8"]\n',
-		// 	"1. e4 e5 2. f4 d5 3. fxe5 Nc6 4. Bb5 Nge7",
-		// ].join("\n");
-		// console.log(pgn);
-		this.game.load_pgn(pgn);
-		// console.log("FEN: " + this.game.fen());
-		this.setState({
-			fen: this.game.fen(),
-			position: this.game.fen(),
-			history: this.game.history({ verbose: false }),
-		});
+
+		if (this.game.load_pgn(pgn)) {
+			this.setState({
+				fenValue: this.game.fen(),
+				position: this.game.fen(),
+				history: this.game.history({ verbose: false }),
+			});
+			//call fensArrayMaker()
+		} else {
+			console.log("NOT A VALID PGN");
+		}
+	}
+
+	onFenSubmit() {
+		console.log("NEW FEN IS: " + this.state.fenValue);
+		if (this.game.load(this.state.fenValue)) {
+			this.setState({
+				fen: this.game.fen(),
+				position: this.game.fen(),
+				history: [],
+			});
+		} else {
+			console.log("NOT A VALID FEN!");
+		}
 	}
 
 	undoMove = () => {
@@ -628,17 +637,28 @@ class Board extends Component {
 								<OpeningStats fen={this.state.fen} />
 							</div>
 							<div className="col-4">
-								<Pgn
-									// onChangeTextHandler={(text) =>
-									// 	this.setState({
-									// 		pgnValue: text.target.value,
-									// 	})
-									// }
-									onChangeTextHandler={(text) =>
-										this.onChangeTextHandler(text)
-									}
-									onPgnSubmit={() => this.onPgnSubmit()}
-								/>
+								<div className="row ml-2">
+									<div className="col-12">
+										<Pgn
+											onChangePgnHandler={(text) =>
+												this.onChangePgnHandler(text)
+											}
+											onPgnSubmit={() =>
+												this.onPgnSubmit()
+											}
+										/>
+									</div>
+									<div className="col-12">
+										<Fen
+											onChangeFenHandler={(text) =>
+												this.onChangeFenHandler(text)
+											}
+											onFenSubmit={() =>
+												this.onFenSubmit()
+											}
+										/>
+									</div>
+								</div>
 							</div>
 						</div>
 					</Fade>
