@@ -6,19 +6,34 @@ class History extends Component {
 		super(props);
 		this.state = {};
 	}
+
+	renderHistory(item, index) {
+		if (index === 0) {
+			return (
+				<span key={0}>
+					{index / 2 + 1}. {item}
+				</span>
+			);
+		} else if (index % 2 === 0) {
+			return (
+				<span key={index}>
+					<br />
+					{index / 2 + 1}. {item}
+				</span>
+			);
+		} else {
+			return <span key={index}> {item}</span>;
+		}
+	}
+
 	render() {
 		return (
-			<Card>
+			<Card className="card-scroll">
 				<CardBody>
 					<CardTitle>Move History</CardTitle>
-                    <ol>
-                    {this.props.history.map((item, index) => (
-                        <li
-                            key={index}
-                            dangerouslySetInnerHTML={{ __html: item }}
-                        ></li>
-                    ))}
-                    </ol>
+					{this.props.history.map((item, index) =>
+						this.renderHistory(item, index)
+					)}
 				</CardBody>
 			</Card>
 		);

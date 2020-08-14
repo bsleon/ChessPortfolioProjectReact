@@ -8,21 +8,21 @@ class Home extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			boardWidth: 600,
-		};
-		this.updateDimensions = this.updateDimensions.bind(this);
+		// this.state = {
+		// 	boardWidth: 600,
+		// };
+		// this.updateDimensions = this.updateDimensions.bind(this);
 	}
-	componentDidMount() {
-		window.addEventListener("resize", this.updateDimensions);
-	}
+	// componentDidMount() {
+	// 	window.addEventListener("resize", this.updateDimensions);
+	// }
 
-	updateDimensions() {
-		this.setState({
-			boardWidth: window.innerWidth / 2,
-		});
-		console.log(this.state.boardWidth);
-	}
+	// updateDimensions() {
+	// 	this.setState({
+	// 		boardWidth: window.innerWidth / 2,
+	// 	});
+	// 	console.log(this.state.boardWidth);
+	// }
 	// constructor(props) {
 	// 	super(props);
 
@@ -46,7 +46,7 @@ class Home extends Component {
 			<React.Fragment>
 				<div className="container">
 					<div className="row">
-						<Board boardWidth={this.state.boardWidth} />
+						<Board />
 					</div>
 				</div>
 			</React.Fragment>

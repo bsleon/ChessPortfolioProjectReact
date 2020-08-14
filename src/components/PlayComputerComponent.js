@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import * as Chess from "chess.js";
 import Chessboard from "chessboardjsx";
-import OpeningStats from "./OpeningStatsComponent";
+// import OpeningStats from "./OpeningStatsComponent";
 
 class PlayComputer extends Component {
 	constructor(props) {
