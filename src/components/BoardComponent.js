@@ -6,6 +6,9 @@ import { Fade } from "react-animation-components";
 import History from "./HistoryComponent";
 import Pgn from "./PgnComponent";
 import Fen from "./FenComponent";
+// import Stockfish from "stockfish"
+
+// const STOCKFISH = window.STOCKFISH;
 
 class Board extends Component {
 	constructor(props) {
@@ -37,6 +40,8 @@ class Board extends Component {
 			undoBtnDisplay: { display: "initial" },
 			pgnValue: [],
 			fenValue: "",
+			messageArray: [],
+			engineFlag: true,
 		};
 	}
 
@@ -427,6 +432,7 @@ class Board extends Component {
 			// 	// dropOffBoard: "trash",
 			// }));
 		}
+		this.engineMove();
 	};
 
 	deletePieces = () => {
@@ -472,6 +478,81 @@ class Board extends Component {
 				fensIndex: 0,
 				// dropOffBoard: "trash",
 			}));
+		}
+	};
+
+	engineMove = (options) => {
+		const engineDepth = 10;
+		const moveTime = 5000;
+
+		let stockfish = new Worker(
+			`${process.env.PUBLIC_URL}/stockfish/stockfish.js`
+		);
+
+		stockfish.onmessage = (event) => {
+		console.log(event.data);
+			this.messageParser(event.data);
+		};
+		
+		stockfish.postMessage(`position fen ${this.game.fen()}`);
+		// stockfish.postMessage(
+		// 	`setoption name MultiPV value ${numOfSuggestions}`
+		// );
+		stockfish.postMessage(`depth ${engineDepth}`);
+		stockfish.postMessage(`go movetime ${moveTime}`);
+	};
+
+	messageParser = (message) => {
+		console.log("MESSAGE IS: " + message);
+		// mess = message.data;
+		// messageArray = mess.split(/\r\n|\n|\r/);
+		// console.log(messageArray[0]);
+		if (message.includes("multipv 1")) {
+			// let multipv1 = "multipv";
+			let messages = message.split(" ");
+			let multipv1Index = messages.findIndex((msg) => msg === "multipv");
+			let suggestion1 = messages[multipv1Index + 4];
+			if (this.game.turn() === "b")
+				suggestion1 = parseInt(suggestion1) * -1;
+			console.log("multipv 1: " + suggestion1 / 100);
+		} else if (message.includes("multipv 2")) {
+			// let multipv1 = "multipv";
+			let messages = message.split(" ");
+			let multipv1Index = messages.findIndex((msg) => msg === "multipv");
+			let suggestion1 = messages[multipv1Index + 4];
+			if (this.game.turn() === "b")
+				suggestion1 = parseInt(suggestion1) * -1;
+			console.log("multipv 2: " + suggestion1 / 100);
+		} else if (message.includes("multipv 3")) {
+			// let multipv1 = "multipv";
+			let messages = message.split(" ");
+			let multipv1Index = messages.findIndex((msg) => msg === "multipv");
+			let suggestion1 = messages[multipv1Index + 4];
+			if (this.game.turn() === "b")
+				suggestion1 = parseInt(suggestion1) * -1;
+			console.log("multipv 3: " + suggestion1 / 100);
+			console.log("\n");
+		}
+
+		if (message.includes("bestmove")) {
+			// console.log("contained stockfish!");
+			this.setState({
+				messageArray: [...this.state.messageArray, message],
+			});
+			// messageArray.push(message);
+			// if (messageArray.length >= engineDepth + 1) {
+			// console.log(messageArray);
+			let msgArray = this.state.messageArray;
+			let engineMove = msgArray[msgArray.length - 1].split(" ");
+			// console.log(messageArray[engineDepth + 1]);
+			// console.log("Engine move is: " + engineMove[1]);
+			if (this.state.engineFlag && this.game.turn() === "b") {
+				this.game.move(engineMove[1], { sloppy: true });
+				this.setState({
+					position: this.game.fen(),
+				});
+				// board.position(this.game.fen());
+			}
 		}
 	};
 
@@ -672,7 +753,7 @@ class Board extends Component {
 					</div>
 
 					<Fade in>
-						<div className="row mt-5">
+						<div className="row mt-1">
 							<div className="col-8">
 								<OpeningStats fen={this.state.fen} />
 							</div>

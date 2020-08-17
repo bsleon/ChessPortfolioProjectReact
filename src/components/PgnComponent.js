@@ -12,7 +12,7 @@ class Pgn extends Component {
 			<Form>
 				<FormGroup>
 					<Label htmlFor="feedback" md={4}>
-						PGN
+						PGN:
 					</Label>
 					<Col md={15}>
 						<Input

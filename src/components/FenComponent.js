@@ -12,7 +12,7 @@ class Fen extends Component {
 			<Form>
 				<FormGroup>
 					<Label htmlFor="feedback" md={4}>
-						FEN
+						FEN:
 					</Label>
 					<Col md={15}>
 						<Input
