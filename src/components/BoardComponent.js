@@ -66,11 +66,11 @@ class Board extends Component {
 
 		if (this.game.load_pgn(pgn)) {
 			this.setState({
-				fenValue: this.game.fen(),
+				fen: this.game.fen(),
 				position: this.game.fen(),
 				history: this.game.history({ verbose: false }),
 			});
-			//call fensArrayMaker()
+			this.fensMaker();
 		} else {
 			console.log("NOT A VALID PGN");
 		}
@@ -87,6 +87,23 @@ class Board extends Component {
 		} else {
 			console.log("NOT A VALID FEN!");
 		}
+	}
+
+	fensMaker() {
+		const moves = this.game.history();
+		const tmpGame = new Chess();
+		const startingPos = tmpGame.fen();
+		let fens = [];
+		for (let i = 0; i < moves.length; ++i) {
+			tmpGame.move(moves[i]);
+			fens.push(tmpGame.fen());
+		}
+		//add the start position
+		fens.unshift(startingPos);
+		this.setState({
+			fensArray: [...fens],
+			fensIndex: fens.length -1,
+		});
 	}
 
 	undoMove = () => {
@@ -328,13 +345,12 @@ class Board extends Component {
 			let move = this.game.move({
 				from: sourceSquare,
 				to: targetSquare,
-				promotion: "q", // always promote to a queen for example simplicity
+				promotion: "q", // always promote to a queen for now
 			});
 
 			// illegal move
 			if (move === null) return;
 
-			// if (move === null) return;
 			this.setState(() => ({
 				fen: this.game.fen(),
 				history: this.game.history({ verbose: false }),
