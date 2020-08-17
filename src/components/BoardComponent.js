@@ -6,9 +6,7 @@ import { Fade } from "react-animation-components";
 import History from "./HistoryComponent";
 import Pgn from "./PgnComponent";
 import Fen from "./FenComponent";
-// import Stockfish from "stockfish"
-
-// const STOCKFISH = window.STOCKFISH;
+import Switch from "react-switch";
 
 class Board extends Component {
 	constructor(props) {
@@ -41,7 +39,8 @@ class Board extends Component {
 			pgnValue: [],
 			fenValue: "",
 			messageArray: [],
-			engineFlag: true,
+			engineOn: false,
+			checked: false,
 		};
 	}
 
@@ -54,6 +53,12 @@ class Board extends Component {
 			],
 		}));
 	}
+
+	onEngineHandler = (checked) => {
+		this.setState({ checked: checked, engineOn: !this.state.engineOn });
+		console.log("engineOn is: " + checked);
+		if (checked) this.engineAnalysis();
+	};
 
 	onChangePgnHandler(text) {
 		let arr = [text.target.value];
@@ -241,7 +246,7 @@ class Board extends Component {
 		// if (!$.isPlainObject(pos)) return false;
 		if (!this.isPlainObject(pos)) return false;
 
-		for (var i in pos) {
+		for (let i in pos) {
 			if (!pos.hasOwnProperty(i)) continue;
 
 			if (!this.validSquare(i) || !this.validPieceCode(pos[i])) {
@@ -253,7 +258,7 @@ class Board extends Component {
 	}
 
 	pieceCodeToFen(piece) {
-		var pieceCodeLetters = piece.split("");
+		let pieceCodeLetters = piece.split("");
 
 		// white piece
 		if (pieceCodeLetters[0] === "w") {
@@ -279,12 +284,12 @@ class Board extends Component {
 		let COLUMNS = "abcdefgh".split("");
 		if (!this.validPositionObject(obj)) return false;
 
-		var fen = "";
+		let fen = "";
 
-		var currentRow = 8;
-		for (var i = 0; i < 8; i++) {
-			for (var j = 0; j < 8; j++) {
-				var square = COLUMNS[j] + currentRow;
+		let currentRow = 8;
+		for (let i = 0; i < 8; i++) {
+			for (let j = 0; j < 8; j++) {
+				let square = COLUMNS[j] + currentRow;
 
 				// piece exists
 				if (obj.hasOwnProperty(square)) {
@@ -322,7 +327,7 @@ class Board extends Component {
 			// let marginRight = parseInt(style.marginRight.slice(0, -2));
 			// let margin = marginLeft + marginRight;
 
-			var rect = chessBoard.getBoundingClientRect();
+			let rect = chessBoard.getBoundingClientRect();
 			return rect.width - padding;
 		}
 		return 600;
@@ -432,7 +437,8 @@ class Board extends Component {
 			// 	// dropOffBoard: "trash",
 			// }));
 		}
-		this.engineMove();
+
+		if (this.state.engineOn) this.engineAnalysis();
 	};
 
 	deletePieces = () => {
@@ -481,7 +487,7 @@ class Board extends Component {
 		}
 	};
 
-	engineMove = (options) => {
+	engineAnalysis = (options) => {
 		const engineDepth = 10;
 		const moveTime = 5000;
 
@@ -490,10 +496,10 @@ class Board extends Component {
 		);
 
 		stockfish.onmessage = (event) => {
-		console.log(event.data);
+			console.log(event.data);
 			this.messageParser(event.data);
 		};
-		
+
 		stockfish.postMessage(`position fen ${this.game.fen()}`);
 		// stockfish.postMessage(
 		// 	`setoption name MultiPV value ${numOfSuggestions}`
@@ -546,7 +552,7 @@ class Board extends Component {
 			let engineMove = msgArray[msgArray.length - 1].split(" ");
 			// console.log(messageArray[engineDepth + 1]);
 			// console.log("Engine move is: " + engineMove[1]);
-			if (this.state.engineFlag && this.game.turn() === "b") {
+			if (this.state.engineOn && this.game.turn() === "b") {
 				this.game.move(engineMove[1], { sloppy: true });
 				this.setState({
 					position: this.game.fen(),
@@ -748,6 +754,16 @@ class Board extends Component {
 						</div>
 
 						<div id="History" className="col-lg-4">
+							<Switch
+								onChange={this.onEngineHandler}
+								checked={this.state.checked}
+								checkedIcon={false}
+								uncheckedIcon={false}
+								onColor="#629924"
+								offColor="#6B6B6B"
+								offHandleColor="#262421"
+								onHandleColor="#262421"
+							/>
 							<History history={this.state.history} />
 						</div>
 					</div>
