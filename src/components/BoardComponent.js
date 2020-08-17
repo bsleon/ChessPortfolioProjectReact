@@ -28,7 +28,6 @@ class Board extends Component {
 			fensArray: [],
 			fensIndex: 0,
 			dropOffBoard: "snapback",
-			// width: this.calcWidth
 			// getPosition: "position",
 			// showSpareOnDrop: false,
 			deletePieceFlag: false,
@@ -102,7 +101,7 @@ class Board extends Component {
 		fens.unshift(startingPos);
 		this.setState({
 			fensArray: [...fens],
-			fensIndex: fens.length -1,
+			fensIndex: fens.length - 1,
 		});
 	}
 
@@ -304,9 +303,25 @@ class Board extends Component {
 		return fen;
 	}
 
-	// calcWidth = (screenWidth, screenHeight) => {
-	// 	return screenWidth;
-	// }
+	calcWidth = () => {
+		let chessBoard = document.getElementById("ChessBoard");
+		if (chessBoard) {
+			let style =
+				chessBoard.currentStyle || window.getComputedStyle(chessBoard);
+
+			let paddingLeft = parseInt(style.paddingLeft.slice(0, -2));
+			let paddingRight = parseInt(style.paddingRight.slice(0, -2));
+			let padding = paddingLeft + paddingRight;
+
+			// let marginLeft = parseInt(style.marginLeft.slice(0, -2));
+			// let marginRight = parseInt(style.marginRight.slice(0, -2));
+			// let margin = marginLeft + marginRight;
+
+			var rect = chessBoard.getBoundingClientRect();
+			return rect.width - padding;
+		}
+		return 600;
+	};
 
 	// getPosition = (position) => {
 	// 	// console.log(position);
@@ -466,187 +481,196 @@ class Board extends Component {
 			<React.Fragment>
 				<div className="container">
 					<div className="row">
-						<div className="col-8">
-							{/* Normal Chessboard */}
-							{!this.state.sparePieces && (
-								<Chessboard
-									position={this.state.position}
-									orientation={this.state.orientation}
-									onSquareRightClick={this.onSquareRightClick}
-									onDrop={this.onDrop}
-									undo={this.state.undo}
-									sparePieces={this.state.sparePieces}
-									lightSquareStyle={{
-										backgroundColor: "#FFFFDD",
-									}}
-									darkSquareStyle={{
-										backgroundColor: "#86A666",
-									}}
-									transitionDuration={150}
-									width={650}
-									// width={this.calcWidth}
-									dropOffBoard={this.state.dropOffBoard}
-									// getPosition={this.getPosition}
-									// onPieceClick={this.onPieceClick}
-									onSquareClick={this.onSquareClick}
-								/>
-							)}
-							{/* Setup Chessboard */}
-							{this.state.sparePieces && (
-								<Chessboard
-									sparePieces
-									onDrop={this.onDrop}
-									orientation={this.state.orientation}
-									position={this.state.position}
-									dropOffBoard="trash"
-									lightSquareStyle={{
-										backgroundColor: "#FFFFDD",
-									}}
-									darkSquareStyle={{
-										backgroundColor: "#86A666",
-									}}
-									transitionDuration={150}
-									width={650}
-									// getPosition={this.getPosition}
-									// onPieceClick={this.onPieceClick}
-									onSquareClick={this.onSquareClick}
-								/>
-							)}
+						<div className="col-lg-8">
+							<div id="ChessBoard" className="col-12">
+								{/* Normal Chessboard */}
+								{!this.state.sparePieces && (
+									<Chessboard
+										position={this.state.position}
+										orientation={this.state.orientation}
+										onSquareRightClick={
+											this.onSquareRightClick
+										}
+										onDrop={this.onDrop}
+										undo={this.state.undo}
+										sparePieces={this.state.sparePieces}
+										lightSquareStyle={{
+											backgroundColor: "#FFFFDD",
+										}}
+										darkSquareStyle={{
+											backgroundColor: "#86A666",
+										}}
+										transitionDuration={150}
+										// width={this.state.width}
+										calcWidth={this.calcWidth}
+										// width={this.calcWidth}
+										dropOffBoard={this.state.dropOffBoard}
+										// getPosition={this.getPosition}
+										// onPieceClick={this.onPieceClick}
+										onSquareClick={this.onSquareClick}
+									/>
+								)}
+								{/* Setup Chessboard */}
+								{this.state.sparePieces && (
+									<Chessboard
+										sparePieces
+										onDrop={this.onDrop}
+										orientation={this.state.orientation}
+										position={this.state.position}
+										dropOffBoard="trash"
+										lightSquareStyle={{
+											backgroundColor: "#FFFFDD",
+										}}
+										darkSquareStyle={{
+											backgroundColor: "#86A666",
+										}}
+										transitionDuration={150}
+										width={650}
+										// getPosition={this.getPosition}
+										// onPieceClick={this.onPieceClick}
+										onSquareClick={this.onSquareClick}
+									/>
+								)}
+							</div>
+
+							<div className="row">
+								<div className="col-12">
+									<div
+										id="playthroughButtons"
+										className="text-center"
+									>
+										<span
+											type="button"
+											className="btn btn-default"
+											id="startPositionBtn"
+											onClick={this.moveBeginning}
+										>
+											<i className="fas fa-fast-backward"></i>
+										</span>
+										<span
+											type="button"
+											className="btn btn-default"
+											id="prevBtn"
+											onClick={this.moveBackward}
+										>
+											<i className="fas fa-backward"></i>
+										</span>
+										<span
+											type="button"
+											className="btn btn-default"
+											id="nextBtn"
+											onClick={this.moveForward}
+										>
+											<i className="fas fa-forward"></i>
+										</span>
+										<span
+											type="button"
+											className="btn btn-default"
+											id="endPositionBtn"
+											onClick={this.moveEnd}
+										>
+											<i className="fas fa-fast-forward"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div className="row">
+								<div className="col-12">
+									<div
+										id="actionButtons"
+										className="text-center"
+									>
+										<span
+											type="button"
+											className={this.state.btnState}
+											id="deleteBtn"
+											data-toggle="tooltip"
+											data-placement="top"
+											title="Delete Pieces"
+											onClick={this.deletePieces}
+											style={this.state.deleteBtnDisplay}
+										>
+											<i className="fas fa-ban"></i>
+										</span>
+										<span
+											type="button"
+											className="btn btn-default"
+											id="clearBoardBtn"
+											data-toggle="tooltip"
+											data-placement="top"
+											title="Clear Board"
+											style={this.state.clearBtnDisplay}
+											onClick={this.clearBoard}
+										>
+											<i className="fas fa-trash-alt"></i>
+										</span>
+										<span
+											type="button"
+											className="btn btn-default"
+											id="startBoardBtn"
+											data-toggle="tooltip"
+											data-placement="top"
+											title="Start Board"
+											style={{ display: "none" }}
+										>
+											<i className="fas fa-chess-board"></i>
+										</span>
+										<span
+											type="button"
+											className="btn btn-default"
+											id="undoMoveBtn"
+											data-toggle="tooltip"
+											data-placement="top"
+											title="Undo Move"
+											onClick={this.undoMove}
+											style={this.state.undoBtnDisplay}
+										>
+											<i className="fas fa-undo-alt"></i>
+										</span>
+										<span
+											type="button"
+											className="btn btn-default"
+											id="newGameBtn"
+											data-toggle="tooltip"
+											data-placement="top"
+											title="New Game"
+											onClick={this.newGame}
+										>
+											<i className="fas fa-chess-board"></i>
+										</span>
+										<span
+											type="button"
+											className="btn btn-default"
+											id="flipBoardBtn"
+											data-toggle="tooltip"
+											data-placement="top"
+											title="Flip Board"
+											onClick={this.flipBoard}
+										>
+											<i className="fas fa-arrows-alt-v"></i>
+										</span>
+										<span
+											type="button"
+											className="btn btn-default"
+											id="setupBoardBtn"
+											data-toggle="tooltip"
+											data-placement="top"
+											title="Edit Board"
+											onClick={this.editBoard}
+										>
+											<i className="far fa-edit"></i>
+										</span>
+									</div>
+								</div>
+							</div>
 						</div>
 
-						<div className="col-4">
+						<div id="History" className="col-lg-4">
 							<History history={this.state.history} />
 						</div>
 					</div>
 
-					<div className="row">
-						<div className="col-7">
-							<div
-								id="playthroughButtons"
-								className="text-center"
-							>
-								<span
-									type="button"
-									className="btn btn-default"
-									id="startPositionBtn"
-									onClick={this.moveBeginning}
-								>
-									<i className="fas fa-fast-backward"></i>
-								</span>
-								<span
-									type="button"
-									className="btn btn-default"
-									id="prevBtn"
-									onClick={this.moveBackward}
-								>
-									<i className="fas fa-backward"></i>
-								</span>
-								<span
-									type="button"
-									className="btn btn-default"
-									id="nextBtn"
-									onClick={this.moveForward}
-								>
-									<i className="fas fa-forward"></i>
-								</span>
-								<span
-									type="button"
-									className="btn btn-default"
-									id="endPositionBtn"
-									onClick={this.moveEnd}
-								>
-									<i className="fas fa-fast-forward"></i>
-								</span>
-							</div>
-						</div>
-					</div>
-
-					<div className="row">
-						<div className="col-7">
-							<div id="actionButtons" className="text-center">
-								<span
-									type="button"
-									className={this.state.btnState}
-									id="deleteBtn"
-									data-toggle="tooltip"
-									data-placement="top"
-									title="Delete Pieces"
-									onClick={this.deletePieces}
-									style={this.state.deleteBtnDisplay}
-								>
-									<i className="fas fa-ban"></i>
-								</span>
-								<span
-									type="button"
-									className="btn btn-default"
-									id="clearBoardBtn"
-									data-toggle="tooltip"
-									data-placement="top"
-									title="Clear Board"
-									style={this.state.clearBtnDisplay}
-									onClick={this.clearBoard}
-								>
-									<i className="fas fa-trash-alt"></i>
-								</span>
-								<span
-									type="button"
-									className="btn btn-default"
-									id="startBoardBtn"
-									data-toggle="tooltip"
-									data-placement="top"
-									title="Start Board"
-									style={{ display: "none" }}
-								>
-									<i className="fas fa-chess-board"></i>
-								</span>
-								<span
-									type="button"
-									className="btn btn-default"
-									id="undoMoveBtn"
-									data-toggle="tooltip"
-									data-placement="top"
-									title="Undo Move"
-									onClick={this.undoMove}
-									style={this.state.undoBtnDisplay}
-								>
-									<i className="fas fa-undo-alt"></i>
-								</span>
-								<span
-									type="button"
-									className="btn btn-default"
-									id="newGameBtn"
-									data-toggle="tooltip"
-									data-placement="top"
-									title="New Game"
-									onClick={this.newGame}
-								>
-									<i className="fas fa-chess-board"></i>
-								</span>
-								<span
-									type="button"
-									className="btn btn-default"
-									id="flipBoardBtn"
-									data-toggle="tooltip"
-									data-placement="top"
-									title="Flip Board"
-									onClick={this.flipBoard}
-								>
-									<i className="fas fa-arrows-alt-v"></i>
-								</span>
-								<span
-									type="button"
-									className="btn btn-default"
-									id="setupBoardBtn"
-									data-toggle="tooltip"
-									data-placement="top"
-									title="Edit Board"
-									onClick={this.editBoard}
-								>
-									<i className="far fa-edit"></i>
-								</span>
-							</div>
-						</div>
-					</div>
 					<Fade in>
 						<div className="row mt-5">
 							<div className="col-8">

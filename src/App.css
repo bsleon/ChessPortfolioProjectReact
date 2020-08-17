@@ -4,6 +4,10 @@ body {
   font-family: "Font Awesome 5 Free" !important;
 }
 
+#ChessBoard {
+  padding: 0;
+}
+
 #loginButton {
   border-color: transparent;
 }
@@ -38,7 +42,15 @@ body {
   border-radius: var(--border-radius);
 }
 
-.fa-flipboard, .fa-edit, .fa-chess-board, .fa-undo-alt, .fa-chess-knight, .fa-chess-king, .fa-trash-alt, .fa-arrows-alt-v, .fa-ban {
+.fa-flipboard,
+.fa-edit,
+.fa-chess-board,
+.fa-undo-alt,
+.fa-chess-knight,
+.fa-chess-king,
+.fa-trash-alt,
+.fa-arrows-alt-v,
+.fa-ban {
   font-size: 30px;
 }
 
@@ -47,7 +59,18 @@ body {
   text-decoration: none;
 }
 
-[data-testid="spare-bK"], [data-testid="spare-bQ"], [data-testid="spare-bR"], [data-testid="spare-bB"], [data-testid="spare-bN"], [data-testid="spare-bP"], [data-testid="spare-wK"], [data-testid="spare-wQ"], [data-testid="spare-wR"], [data-testid="spare-wB"], [data-testid="spare-wN"], [data-testid="spare-wP"] {
+[data-testid="spare-bK"],
+[data-testid="spare-bQ"],
+[data-testid="spare-bR"],
+[data-testid="spare-bB"],
+[data-testid="spare-bN"],
+[data-testid="spare-bP"],
+[data-testid="spare-wK"],
+[data-testid="spare-wQ"],
+[data-testid="spare-wR"],
+[data-testid="spare-wB"],
+[data-testid="spare-wN"],
+[data-testid="spare-wP"] {
   background-color: #555;
 }
 
@@ -60,25 +83,33 @@ body {
   overflow-y: auto;
 }
 
+.card {
+  background-color: rgb(10, 10, 10) !important;
+}
+
 .form-control {
   background-color: transparent !important;
-  color: #BBB !important;
-  border: solid 3px #343A40 !important;
+  color: #bbb !important;
+  border: solid 3px #343a40 !important;
   border-radius: 0% !important;
 }
 
-.form-control, button {
+.form-control,
+button {
   border-radius: 0% !important;
 }
 
-.form-control, button:hover {
+.form-control,
+button:hover {
   text-decoration: none !important;
 }
 
-.form-control, button:focus {
+.form-control,
+button:focus {
   text-decoration: none !important;
 }
 
-.form-control, button:active {
+.form-control,
+button:active {
   text-decoration: none !important;
 }
