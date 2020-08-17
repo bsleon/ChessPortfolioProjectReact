@@ -28,7 +28,7 @@ class Pgn extends Component {
 					<Col className="text-right m-0 p-0">
 						<Button
 							type="button"
-							color="secondary"
+							color="dark"
 							onClick={() => this.props.onPgnSubmit()}
 						>
 							Import PGN

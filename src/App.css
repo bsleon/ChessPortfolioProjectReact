@@ -59,3 +59,26 @@ body {
   max-height: 400px;
   overflow-y: auto;
 }
+
+.form-control {
+  background-color: transparent !important;
+  color: #BBB !important;
+  border: solid 3px #343A40 !important;
+  border-radius: 0% !important;
+}
+
+.form-control, button {
+  border-radius: 0% !important;
+}
+
+.form-control, button:hover {
+  text-decoration: none !important;
+}
+
+.form-control, button:focus {
+  text-decoration: none !important;
+}
+
+.form-control, button:active {
+  text-decoration: none !important;
+}
