@@ -9,7 +9,7 @@ import Fen from "./FenComponent";
 import Switch from "react-switch";
 
 class PlayComputer extends Component {
-constructor(props) {
+	constructor(props) {
 		super(props);
 		this.state = {
 			position:
@@ -31,6 +31,7 @@ constructor(props) {
 			dropOffBoard: "snapback",
 			// getPosition: "position",
 			// showSpareOnDrop: false,
+			width: 0,
 			deletePieceFlag: false,
 			btnState: "btn btn-default",
 			deleteBtnDisplay: { display: "none" },
@@ -328,7 +329,8 @@ constructor(props) {
 			// let margin = marginLeft + marginRight;
 
 			let rect = chessBoard.getBoundingClientRect();
-			return rect.width - padding;
+			let width = rect.width - padding;
+			return width;
 		}
 		return 600;
 	};

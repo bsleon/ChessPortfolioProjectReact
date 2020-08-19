@@ -27,9 +27,10 @@ class History extends Component {
 	}
 
 	render() {
+		console.log(this.props.width)
 		return (
 			<Card className="card-scroll">
-				<CardBody>
+				<CardBody style={{height:this.props.width}}>
 					<CardTitle>Move History</CardTitle>
 					{this.props.history.map((item, index) =>
 						this.renderHistory(item, index)

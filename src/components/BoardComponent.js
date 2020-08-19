@@ -41,6 +41,7 @@ class Board extends Component {
 			messageArray: [],
 			engineOn: false,
 			checked: false,
+			suggestionArray: [],
 		};
 	}
 
@@ -488,78 +489,81 @@ class Board extends Component {
 	};
 
 	engineAnalysis = (options) => {
-		const engineDepth = 10;
-		const moveTime = 5000;
+		const engineDepth = 15;
+		const moveTime = 10000;
+		const numOfSuggestions = 5;
 
 		let stockfish = new Worker(
 			`${process.env.PUBLIC_URL}/stockfish/stockfish.js`
 		);
 
 		stockfish.onmessage = (event) => {
+			console.log("\nNew data!");
 			console.log(event.data);
-			this.messageParser(event.data);
+			this.messageParser(event.data, numOfSuggestions);
 		};
 
 		stockfish.postMessage(`position fen ${this.game.fen()}`);
-		// stockfish.postMessage(
-		// 	`setoption name MultiPV value ${numOfSuggestions}`
-		// );
+		stockfish.postMessage(
+			`setoption name MultiPV value ${numOfSuggestions}`
+		);
 		stockfish.postMessage(`depth ${engineDepth}`);
 		stockfish.postMessage(`go movetime ${moveTime}`);
 	};
 
-	messageParser = (message) => {
-		console.log("MESSAGE IS: " + message);
-		// mess = message.data;
-		// messageArray = mess.split(/\r\n|\n|\r/);
-		// console.log(messageArray[0]);
-		if (message.includes("multipv 1")) {
-			// let multipv1 = "multipv";
-			let messages = message.split(" ");
-			let multipv1Index = messages.findIndex((msg) => msg === "multipv");
-			let suggestion1 = messages[multipv1Index + 4];
-			if (this.game.turn() === "b")
-				suggestion1 = parseInt(suggestion1) * -1;
-			console.log("multipv 1: " + suggestion1 / 100);
-		} else if (message.includes("multipv 2")) {
-			// let multipv1 = "multipv";
-			let messages = message.split(" ");
-			let multipv1Index = messages.findIndex((msg) => msg === "multipv");
-			let suggestion1 = messages[multipv1Index + 4];
-			if (this.game.turn() === "b")
-				suggestion1 = parseInt(suggestion1) * -1;
-			console.log("multipv 2: " + suggestion1 / 100);
-		} else if (message.includes("multipv 3")) {
-			// let multipv1 = "multipv";
-			let messages = message.split(" ");
-			let multipv1Index = messages.findIndex((msg) => msg === "multipv");
-			let suggestion1 = messages[multipv1Index + 4];
-			if (this.game.turn() === "b")
-				suggestion1 = parseInt(suggestion1) * -1;
-			console.log("multipv 3: " + suggestion1 / 100);
-			console.log("\n");
-		}
+	messageParser = (message, numOfSuggestions) => {
+		let score = 0;
+		let suggestion = "";
+		let multipvIndex = 0;
+		let suggArr = [];
 
-		if (message.includes("bestmove")) {
-			// console.log("contained stockfish!");
-			this.setState({
-				messageArray: [...this.state.messageArray, message],
-			});
-			// messageArray.push(message);
-			// if (messageArray.length >= engineDepth + 1) {
-			// console.log(messageArray);
-			let msgArray = this.state.messageArray;
-			let engineMove = msgArray[msgArray.length - 1].split(" ");
-			// console.log(messageArray[engineDepth + 1]);
-			// console.log("Engine move is: " + engineMove[1]);
-			if (this.state.engineOn && this.game.turn() === "b") {
-				this.game.move(engineMove[1], { sloppy: true });
+		// write an object array for these and display them with a map
+
+		for (let i = 1; i <= numOfSuggestions; ++i) {
+			if (message.includes("multipv " + i)) {
+				// let multipv1 = "multipv";
+				let messages = message.split(" ");
+				multipvIndex = messages.findIndex((msg) => msg === "multipv");
+
+				score = messages[multipvIndex + 4];
+				suggestion = messages[multipvIndex + 14];
+				if (this.game.turn() === "b") score = parseInt(score) * -1;
+				score = score / 100;
+
 				this.setState({
-					position: this.game.fen(),
+					score: score,
+					suggestion: suggestion,
 				});
-				// board.position(this.game.fen());
+
+				let obj = {
+					multipvIndex: i,
+					score: score,
+					suggestion: suggestion,
+				};
+				// suggArr.push(obj);
+				suggArr[i] = obj;
+
+				console.log(
+					"multipv " +
+						i +
+						": " +
+						"score: " +
+						score / 100 +
+						" suggestion " +
+						i +
+						": " +
+						suggestion
+				);
 			}
 		}
+
+		// console.log(suggArr)
+
+		this.setState({
+			suggestionArray: [...suggArr],
+		});
+
+		// console.log(this.state.suggestionArray);
 	};
 
 	render() {
@@ -754,17 +758,43 @@ class Board extends Component {
 						</div>
 
 						<div id="History" className="col-lg-4">
-							<Switch
-								onChange={this.onEngineHandler}
-								checked={this.state.checked}
-								checkedIcon={false}
-								uncheckedIcon={false}
-								onColor="#629924"
-								offColor="#6B6B6B"
-								offHandleColor="#262421"
-								onHandleColor="#262421"
-							/>
+							<div className="row">
+								<div className="col-2">
+									<Switch
+										onChange={this.onEngineHandler}
+										checked={this.state.checked}
+										checkedIcon={false}
+										uncheckedIcon={false}
+										onColor="#629924"
+										offColor="#6B6B6B"
+										offHandleColor="#262421"
+										onHandleColor="#262421"
+									/>
+								</div>
+								<div className="col-10">
+									{this.state.score} {this.state.suggestion}
+								</div>
+							</div>
+
 							<History history={this.state.history} />
+							<div className="row">
+								<div className="col-12">
+									<Pgn
+										onChangePgnHandler={(text) =>
+											this.onChangePgnHandler(text)
+										}
+										onPgnSubmit={() => this.onPgnSubmit()}
+									/>
+								</div>
+								<div className="col-12">
+									<Fen
+										onChangeFenHandler={(text) =>
+											this.onChangeFenHandler(text)
+										}
+										onFenSubmit={() => this.onFenSubmit()}
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 
@@ -773,7 +803,7 @@ class Board extends Component {
 							<div className="col-8">
 								<OpeningStats fen={this.state.fen} />
 							</div>
-							<div className="col-4">
+							{/* <div className="col-4">
 								<div className="row ml-2">
 									<div className="col-12">
 										<Pgn
@@ -796,7 +826,7 @@ class Board extends Component {
 										/>
 									</div>
 								</div>
-							</div>
+							</div> */}
 						</div>
 					</Fade>
 				</div>
