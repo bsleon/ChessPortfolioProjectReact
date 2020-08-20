@@ -8,6 +8,8 @@ import Pgn from "./PgnComponent";
 import Fen from "./FenComponent";
 import Switch from "react-switch";
 
+let stockfish = null;
+
 class Board extends Component {
 	constructor(props) {
 		super(props);
@@ -41,7 +43,8 @@ class Board extends Component {
 			messageArray: [],
 			engineOn: false,
 			checked: false,
-			suggestionArray: [],
+			suggestion: "",
+			score: "",
 		};
 	}
 
@@ -56,9 +59,17 @@ class Board extends Component {
 	}
 
 	onEngineHandler = (checked) => {
-		this.setState({ checked: checked, engineOn: !this.state.engineOn });
+		this.setState({
+			checked: checked,
+			engineOn: !this.state.engineOn,
+			suggestion: "Thinking...",
+		});
 		console.log("engineOn is: " + checked);
 		if (checked) this.engineAnalysis();
+		else {
+			stockfish.terminate();
+			this.setState({ suggestion: "", score: "" });
+		}
 	};
 
 	onChangePgnHandler(text) {
@@ -81,6 +92,10 @@ class Board extends Component {
 				history: this.game.history({ verbose: false }),
 			});
 			this.fensMaker();
+			if (this.state.checked) {
+				this.setState({ suggestion: "Thinking..." });
+				this.engineAnalysis();
+			}
 		} else {
 			console.log("NOT A VALID PGN");
 		}
@@ -94,6 +109,10 @@ class Board extends Component {
 				position: this.game.fen(),
 				history: [],
 			});
+			if (this.state.checked) {
+				this.setState({ suggestion: "Thinking..." });
+				this.engineAnalysis();
+			}
 		} else {
 			console.log("NOT A VALID FEN!");
 		}
@@ -132,6 +151,14 @@ class Board extends Component {
 			fensArray: [...arr],
 			fensIndex: i,
 		});
+
+		if (this.state.checked) {
+			stockfish.terminate();
+			this.setState({
+				suggestion: "Thinking...",
+			});
+			this.engineAnalysis();
+		}
 	};
 
 	flipBoard = () => {
@@ -160,7 +187,16 @@ class Board extends Component {
 			fensArray: [...arr],
 			fensIndex: 0,
 			dropOffBoard: "snapback",
+			suggestion: "",
+			score: "",
 		});
+		if (this.state.checked) {
+			stockfish.terminate();
+			this.setState({
+				suggestion: "Thinking...",
+			});
+			this.engineAnalysis();
+		}
 	};
 
 	editBoard = () => {
@@ -364,6 +400,18 @@ class Board extends Component {
 	// 	// this.game.load(this.state.position);
 	// };
 
+	// onPieceClick = () => {
+	// 	// if (stockfish) stockfish.postMessage(`stop`);
+	// 	stockfish.terminate();
+	// 	console.log("Piece Clicked!");
+	// };
+
+	// onDragOverSquare = (square) => {
+	// 	// if (stockfish) stockfish.postMessage(`stop`);
+	// 	if (square != null && stockfish) stockfish.terminate();
+	// 	console.log("Dragging");
+	// };
+
 	onDrop = ({ sourceSquare, targetSquare, piece }) => {
 		console.log(sourceSquare + " " + targetSquare + " " + piece);
 		if (!this.state.sparePieces) {
@@ -376,6 +424,9 @@ class Board extends Component {
 
 			// illegal move
 			if (move === null) return;
+
+			if (this.state.checked)
+				this.setState({ suggestion: "Thinking..." });
 
 			this.setState(() => ({
 				fen: this.game.fen(),
@@ -439,7 +490,10 @@ class Board extends Component {
 			// }));
 		}
 
-		if (this.state.engineOn) this.engineAnalysis();
+		if (this.state.engineOn) {
+			stockfish.terminate();
+			this.engineAnalysis();
+		}
 	};
 
 	deletePieces = () => {
@@ -488,12 +542,22 @@ class Board extends Component {
 		}
 	};
 
+	move_to_san(move) {
+		const attemptMove = this.game.move(move, { sloppy: true });
+		this.game.undo();
+
+		if (attemptMove) {
+			this.setState({ suggestion: attemptMove.san });
+			return attemptMove.san;
+		}
+	}
+
 	engineAnalysis = (options) => {
 		const engineDepth = 15;
-		const moveTime = 10000;
+		const moveTime = 1000;
 		const numOfSuggestions = 5;
 
-		let stockfish = new Worker(
+		stockfish = new Worker(
 			`${process.env.PUBLIC_URL}/stockfish/stockfish.js`
 		);
 
@@ -517,51 +581,81 @@ class Board extends Component {
 		let multipvIndex = 0;
 		let suggArr = [];
 
+		if (message.includes("multipv 1")) {
+			let messages = message.split(" ");
+			multipvIndex = messages.findIndex((msg) => msg === "multipv");
+			score = messages[multipvIndex + 4];
+
+			if (this.game.turn() === "b") score = parseInt(score) * -1;
+			score = score / 100;
+			this.setState({
+				score: score,
+			});
+		}
+
+		if (message.includes("bestmove")) {
+			// console.log("contained stockfish!");
+			let msgArr = [];
+			msgArr.push(message);
+			// if (messageArray.length >= engineDepth + 1) {
+			// console.log(messageArray);
+			let engineSuggestion = msgArr[msgArr.length - 1].split(" ");
+			this.setState({
+				suggestion: engineSuggestion[1],
+			});
+			// console.log(messageArray[engineDepth + 1]);
+			console.log("Engine suggestion is: " + engineSuggestion[1]);
+			console.log(
+				"San move is: " + this.move_to_san(engineSuggestion[1])
+			);
+		}
+
 		// write an object array for these and display them with a map
 
-		for (let i = 1; i <= numOfSuggestions; ++i) {
-			if (message.includes("multipv " + i)) {
-				// let multipv1 = "multipv";
-				let messages = message.split(" ");
-				multipvIndex = messages.findIndex((msg) => msg === "multipv");
+		//*****FOR SHOWING MULTIPLE SUGGESTIONS IN THE FUTURE */
+		// for (let i = 1; i <= numOfSuggestions; ++i) {
+		// 	if (message.includes("multipv " + i)) {
+		// 		// let multipv1 = "multipv";
+		// 		let messages = message.split(" ");
+		// 		multipvIndex = messages.findIndex((msg) => msg === "multipv");
 
-				score = messages[multipvIndex + 4];
-				suggestion = messages[multipvIndex + 14];
-				if (this.game.turn() === "b") score = parseInt(score) * -1;
-				score = score / 100;
+		// 		score = messages[multipvIndex + 4];
+		// 		suggestion = messages[multipvIndex + 14];
+		// 		if (this.game.turn() === "b") score = parseInt(score) * -1;
+		// 		score = score / 100;
 
-				this.setState({
-					score: score,
-					suggestion: suggestion,
-				});
+		// 		this.setState({
+		// 			score: score,
+		// 			suggestion: suggestion,
+		// 		});
 
-				let obj = {
-					multipvIndex: i,
-					score: score,
-					suggestion: suggestion,
-				};
-				// suggArr.push(obj);
-				suggArr[i] = obj;
+		// 		let obj = {
+		// 			multipvIndex: i,
+		// 			score: score,
+		// 			suggestion: suggestion,
+		// 		};
+		// 		// suggArr.push(obj);
+		// 		suggArr[i] = obj;
 
-				console.log(
-					"multipv " +
-						i +
-						": " +
-						"score: " +
-						score / 100 +
-						" suggestion " +
-						i +
-						": " +
-						suggestion
-				);
-			}
-		}
+		// 		console.log(
+		// 			"multipv " +
+		// 				i +
+		// 				": " +
+		// 				"score: " +
+		// 				score / 100 +
+		// 				" suggestion " +
+		// 				i +
+		// 				": " +
+		// 				suggestion
+		// 		);
+		// 	}
+		// }
 
 		// console.log(suggArr)
 
-		this.setState({
-			suggestionArray: [...suggArr],
-		});
+		// this.setState({
+		// 	suggestionArray: [...suggArr],
+		// });
 
 		// console.log(this.state.suggestionArray);
 	};
@@ -599,6 +693,8 @@ class Board extends Component {
 										// getPosition={this.getPosition}
 										// onPieceClick={this.onPieceClick}
 										onSquareClick={this.onSquareClick}
+										// onPieceClick={this.onPieceClick}
+										// onDragOverSquare={this.onDragOverSquare}
 									/>
 								)}
 								{/* Setup Chessboard */}
@@ -772,7 +868,8 @@ class Board extends Component {
 									/>
 								</div>
 								<div className="col-10">
-									{this.state.score} {this.state.suggestion}
+									<div>Score: {this.state.score}</div>
+									<div>Move: {this.state.suggestion}</div>
 								</div>
 							</div>
 
