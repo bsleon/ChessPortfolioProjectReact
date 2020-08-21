@@ -72,6 +72,10 @@ class Board extends Component {
 		}
 	};
 
+	onCheckHandler = (checked) => {
+		this.setState({ checked: checked });
+	};
+
 	onChangePgnHandler(text) {
 		let arr = [text.target.value];
 		this.setState({ pgnValue: [...arr] });
@@ -577,9 +581,9 @@ class Board extends Component {
 
 	messageParser = (message, numOfSuggestions) => {
 		let score = 0;
-		let suggestion = "";
+		// let suggestion = "";
 		let multipvIndex = 0;
-		let suggArr = [];
+		// let suggArr = [];
 
 		if (message.includes("multipv 1")) {
 			let messages = message.split(" ");
@@ -854,7 +858,7 @@ class Board extends Component {
 						</div>
 
 						<div id="History" className="col-lg-4">
-							<div className="row">
+							{/* <div className="row">
 								<div className="col-2">
 									<Switch
 										onChange={this.onEngineHandler}
@@ -871,9 +875,18 @@ class Board extends Component {
 									<div>Score: {this.state.score}</div>
 									<div>Move: {this.state.suggestion}</div>
 								</div>
-							</div>
+							</div> */}
 
-							<History history={this.state.history} />
+							<History
+								history={this.state.history}
+								width={this.calcWidth()}
+								checked={this.state.checked}
+								suggestion={this.state.suggestion}
+								score={this.state.score}
+								onEngineHandler={(checked) =>
+									this.onEngineHandler(checked)
+								}
+							/>
 							<div className="row">
 								<div className="col-12">
 									<Pgn
