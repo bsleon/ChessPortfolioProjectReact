@@ -11,7 +11,7 @@ class Fen extends Component {
 		return (
 			<Form>
 				<FormGroup>
-					<Label htmlFor="feedback" md={4}>
+					<Label htmlFor="fen" md={4}>
 						FEN:
 					</Label>
 					<Col md={15}>

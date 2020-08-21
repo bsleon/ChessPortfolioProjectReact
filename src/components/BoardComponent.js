@@ -6,7 +6,8 @@ import { Fade } from "react-animation-components";
 import History from "./HistoryComponent";
 import Pgn from "./PgnComponent";
 import Fen from "./FenComponent";
-import Switch from "react-switch";
+// import Switch from "react-switch";
+import OpeningsDropdown from "./OpeningsDropdownComponent";
 
 let stockfish = null;
 
@@ -903,6 +904,9 @@ class Board extends Component {
 										}
 										onFenSubmit={() => this.onFenSubmit()}
 									/>
+								</div>
+								<div className="col-12">
+									<OpeningsDropdown></OpeningsDropdown>
 								</div>
 							</div>
 						</div>
