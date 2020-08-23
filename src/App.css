@@ -113,6 +113,26 @@ button:focus {
 button:active {
 	text-decoration: none !important;
 }
+
+.Select-control {
+	background-color: transparent !important;
+	border: solid 3px #343a40 !important;
+}
+
+.Select-input input{
+	color: #bbb !important;
+}
+
+.Select-value-label {
+	color: #bbb !important;
+}
+
+.Select-menu-outer {
+	background-color: transparent !important;
+	border: solid 3px #343a40 !important;
+	color: #bbb !important;
+}
+
 /* 
 .row {
 	border: green solid 5px;

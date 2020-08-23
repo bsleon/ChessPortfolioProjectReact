@@ -46,6 +46,7 @@ class Board extends Component {
 			checked: false,
 			suggestion: "",
 			score: "",
+			selectedOption: null,
 		};
 	}
 
@@ -71,6 +72,40 @@ class Board extends Component {
 			stockfish.terminate();
 			this.setState({ suggestion: "", score: "" });
 		}
+	};
+
+	onChangeOpeningsHandler = (selectedOption) => {
+		if (selectedOption) {
+			this.setState(
+				{
+					selectedOption: selectedOption,
+				},
+				() => console.log(this.state.selectedOption.value)
+			);
+		}
+		let fen = selectedOption.value + " 0 1";
+		if (this.game.validate_fen(fen)) {
+			this.game.load(fen);
+			let histArr = this.game_to_san(selectedOption.moves.split(" "));
+			// histArr = histArr.map((move) => this.move_to_san(move));
+			// console.log(histArr[1]);
+			// const attemptMove = this.move_to_san(histArr[1]);
+			// console.log(this.game_to_san(histArr));
+			// console.log(attemptMove);
+			// histArr = [...this.game_to_san(histArr)]
+			console.log(histArr);
+			this.setState({ history: [...histArr] });
+			this.fensMaker();
+			// this.newGame();
+
+			this.setState({
+				fen: selectedOption.value + " 0 1",
+				fenValue: selectedOption.value + " 0 1",
+				position: fen,
+				// history: this.game.history({ verbose: false }),
+				// history: selectedOption.moves.map(move => this.moveToSan(move)),
+			});
+		} else console.log("NOT A VALID FEN");
 	};
 
 	onCheckHandler = (checked) => {
@@ -234,11 +269,13 @@ class Board extends Component {
 	};
 
 	moveEnd = () => {
-		let i = this.state.fensArray.length - 1;
-		this.setState({
-			fensIndex: i,
-			position: this.state.fensArray[i],
-		});
+		if (this.state.history.length) {
+			let i = this.state.fensArray.length - 1;
+			this.setState({
+				fensIndex: i,
+				position: this.state.fensArray[i],
+			});
+		}
 	};
 
 	moveForward = () => {
@@ -262,10 +299,12 @@ class Board extends Component {
 	};
 
 	moveBeginning = () => {
-		this.setState({
-			fensIndex: 0,
-			position: this.state.fensArray[0],
-		});
+		if (this.state.history.length) {
+			this.setState({
+				fensIndex: 0,
+				position: this.state.fensArray[0],
+			});
+		}
 	};
 
 	isString(s) {
@@ -548,13 +587,25 @@ class Board extends Component {
 	};
 
 	move_to_san(move) {
+		console.log("MOVE IS BEFORE: " + move);
 		const attemptMove = this.game.move(move, { sloppy: true });
+		if (attemptMove) console.log("MOVE IS AFTER: " + attemptMove.san);
 		this.game.undo();
 
 		if (attemptMove) {
-			this.setState({ suggestion: attemptMove.san });
 			return attemptMove.san;
 		}
+		return false;
+	}
+
+	game_to_san(moves) {
+		this.newGame();
+		let sanMoves = [];
+		sanMoves = moves.map(
+			(move) => this.game.move(move, { sloppy: true }).san
+		);
+
+		return sanMoves;
 	}
 
 	engineAnalysis = (options) => {
@@ -609,10 +660,13 @@ class Board extends Component {
 				suggestion: engineSuggestion[1],
 			});
 			// console.log(messageArray[engineDepth + 1]);
+			let moveToSan = this.move_to_san(engineSuggestion[1]);
+			if (moveToSan) {
+				this.setState({ suggestion: moveToSan });
+			}
+
 			console.log("Engine suggestion is: " + engineSuggestion[1]);
-			console.log(
-				"San move is: " + this.move_to_san(engineSuggestion[1])
-			);
+			console.log("San move is: " + moveToSan);
 		}
 
 		// write an object array for these and display them with a map
@@ -906,7 +960,11 @@ class Board extends Component {
 									/>
 								</div>
 								<div className="col-12">
-									<OpeningsDropdown></OpeningsDropdown>
+									<OpeningsDropdown
+										onChangeOpeningsHandler={(text) =>
+											this.onChangeOpeningsHandler(text)
+										}
+									/>
 								</div>
 							</div>
 						</div>
