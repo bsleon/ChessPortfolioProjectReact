@@ -60,6 +60,15 @@ class Board extends Component {
 		}));
 	}
 
+	onHistoryClickHander = (index) => {
+		console.log("INDEX: " + index);
+
+		this.setState({
+			fensIndex: index+1,
+			position: this.state.fensArray[index+1],
+		});
+	};
+
 	onEngineHandler = (checked) => {
 		this.setState({
 			checked: checked,
@@ -941,8 +950,12 @@ class Board extends Component {
 								checked={this.state.checked}
 								suggestion={this.state.suggestion}
 								score={this.state.score}
+								fensIndex={this.state.fensIndex}
 								onEngineHandler={(checked) =>
 									this.onEngineHandler(checked)
+								}
+								onHistoryClickHander={(index) =>
+									this.onHistoryClickHander(index)
 								}
 							/>
 							<div className="row">

@@ -66,7 +66,7 @@ class OpeningsDropdown extends Component {
 				labelKey="label"
 				// maxHeight={200}
 				// multi={false}
-				optionHeight={45}
+				optionHeight={50}
 				searchable={true}
 				// simpleValue={true}
 				placeholder={"Load an Opening..."}

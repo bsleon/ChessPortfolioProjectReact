@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, CardBody, CardTitle } from "reactstrap";
+import { Card, CardBody, CardTitle, Button } from "reactstrap";
 import Switch from "react-switch";
 
 class History extends Component {
@@ -9,21 +9,65 @@ class History extends Component {
 	}
 
 	renderHistory(item, index) {
+		console.log(this.props.fensIndex);
 		if (index === 0) {
 			return (
-				<span key={0}>
-					{index / 2 + 1}. {item}
-				</span>
+				// <span key={0}>
+				<>
+					{index / 2 + 1}.{" "}
+					<Button
+						key={0}
+						style={styles.button}
+						onClick={() => this.props.onHistoryClickHander(index)}
+						className="historyBtn"
+						active={
+							this.props.fensIndex === index + 1 ? true : false
+						}
+					>
+						{item}
+					</Button>
+					{/* </span> */}
+				</>
 			);
 		} else if (index % 2 === 0) {
 			return (
-				<span key={index}>
+				<>
 					<br />
-					{index / 2 + 1}. {item}
-				</span>
+					{/* <span key={index}> */}
+					{index / 2 + 1}.{" "}
+					<Button
+						key={index}
+						style={styles.button}
+						onClick={() => this.props.onHistoryClickHander(index)}
+						className="historyBtn"
+						active={
+							this.props.fensIndex === index + 1 ? true : false
+						}
+					>
+						{item}
+					</Button>
+					{/* </span> */}
+				</>
 			);
 		} else {
-			return <span key={index}> {item}</span>;
+			return (
+				<>
+					{/* // {" "} */}
+					{/* // <span key={index}> */}{" "}
+					<Button
+						key={index}
+						style={styles.button}
+						onClick={() => this.props.onHistoryClickHander(index)}
+						className="historyBtn"
+						active={
+							this.props.fensIndex === index + 1 ? true : false
+						}
+					>
+						{item}
+					</Button>
+					{/* // </span> */}
+				</>
+			);
 		}
 	}
 
@@ -64,5 +108,13 @@ class History extends Component {
 		);
 	}
 }
+
+const styles = {
+	button: {
+		backgroundColor: "transparent",
+		border: "none",
+		padding: 4,
+	},
+};
 
 export default History;
