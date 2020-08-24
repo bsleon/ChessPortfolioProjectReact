@@ -11,11 +11,12 @@ class Pgn extends Component {
 		return (
 			<Form>
 				<FormGroup>
-					<Label htmlFor="feedback" md={4}>
+					{/* <Label htmlFor="pgn" md={4}>
 						PGN:
-					</Label>
+					</Label> */}
 					<Col md={15}>
 						<Input
+							placeholder="PGN:"
 							type="textarea"
 							id="pgn"
 							name="pgn"

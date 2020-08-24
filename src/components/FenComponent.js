@@ -11,11 +11,12 @@ class Fen extends Component {
 		return (
 			<Form>
 				<FormGroup>
-					<Label htmlFor="fen" md={4}>
+					{/* <Label htmlFor="fen" md={4}>
 						FEN:
-					</Label>
+					</Label> */}
 					<Col md={15}>
 						<Input
+							placeholder="FEN:"
 							type="textarea"
 							id="fen"
 							name="fen"

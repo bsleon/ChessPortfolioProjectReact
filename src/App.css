@@ -59,10 +59,46 @@ body {
 	background-color: black !important;
 }
 
-.card-scroll {
+#cardScroll {
 	/* max-height: 400px; */
 	overflow-y: auto;
+	/* overflow-y: scroll;
+	overscroll-behavior-y: contain;
+	scroll-snap-type: y proximity;
+	scroll-snap-align: end;  */
+	/* overflow-x: hidden;
+	overflow-y: auto;
+	transform: rotate(180deg);
+	direction: rtl;
+	text-align: left; */
+	color: #bbb !important;
 }
+
+#engineMeter {
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+}
+
+.btn-secondary {
+	color: #bbb !important;
+}
+
+#engineCard, #engineCardBody {
+	background-color: #111 !important;
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
+	margin: 0 !important;
+}
+
+/* .histCardBody {
+	transform: rotate(180deg);
+} */
+
+/* .card-scroll>CardBody{
+	scroll-snap-align: end;
+} */
 
 .card {
 	background-color: rgb(10, 10, 10) !important;

@@ -78,8 +78,7 @@ class Board extends Component {
 	handleKeyDown = (event) => {
 		if (event.key === "ArrowLeft") {
 			this.moveBackward();
-		}
-		else if (event.key === "ArrowRight") {
+		} else if (event.key === "ArrowRight") {
 			this.moveForward();
 		}
 	};
@@ -804,6 +803,11 @@ class Board extends Component {
 										onSquareClick={this.onSquareClick}
 									/>
 								)}
+
+								{/* <div id="engineMeter" style={{border: "solid 5px white"}}> */}
+									{/* <meter id="engineMeter"></meter> */}
+								{/* </div> */}
+
 							</div>
 
 							<div className="row">
@@ -938,6 +942,10 @@ class Board extends Component {
 								</div>
 							</div>
 						</div>
+						{/* 
+						<div className="col-1">
+							<meter id="engineMeter"></meter>
+						</div> */}
 
 						<div id="History" className="col-lg-4">
 							{/* <div className="row">
@@ -973,7 +981,7 @@ class Board extends Component {
 									this.onHistoryClickHander(index)
 								}
 							/>
-							<div className="row">
+							<div className="row pt-4">
 								<div className="col-12">
 									<Pgn
 										onChangePgnHandler={(text) =>
