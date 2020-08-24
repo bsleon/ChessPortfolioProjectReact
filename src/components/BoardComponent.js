@@ -51,6 +51,8 @@ class Board extends Component {
 	}
 
 	componentDidMount() {
+		// this.addEventListener(this._onchange);
+		document.addEventListener("keydown", this.handleKeyDown);
 		this.game = new Chess();
 		this.setState(() => ({
 			fensArray: [
@@ -60,13 +62,26 @@ class Board extends Component {
 		}));
 	}
 
+	componentWillUnmount() {
+		document.removeEventListener("keydown", this.handleKeyDown);
+	}
+
 	onHistoryClickHander = (index) => {
 		console.log("INDEX: " + index);
 
 		this.setState({
-			fensIndex: index+1,
-			position: this.state.fensArray[index+1],
+			fensIndex: index + 1,
+			position: this.state.fensArray[index + 1],
 		});
+	};
+
+	handleKeyDown = (event) => {
+		if (event.key === "ArrowLeft") {
+			this.moveBackward();
+		}
+		else if (event.key === "ArrowRight") {
+			this.moveForward();
+		}
 	};
 
 	onEngineHandler = (checked) => {
@@ -735,7 +750,7 @@ class Board extends Component {
 		// return <p>Play Computer</p>;
 		return (
 			<React.Fragment>
-				<div className="container">
+				<div className="container" onKeyDown={this.handleKeyPress}>
 					<div className="row">
 						<div className="col-lg-8">
 							<div id="ChessBoard" className="col-12">
