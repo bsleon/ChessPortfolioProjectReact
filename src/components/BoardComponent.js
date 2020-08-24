@@ -118,7 +118,7 @@ class Board extends Component {
 	}
 
 	onChangeFenHandler(text) {
-		let fen = text.target.value;
+		let fen = text.target.value.trim();
 		this.setState({ fenValue: fen });
 	}
 
@@ -143,11 +143,14 @@ class Board extends Component {
 
 	onFenSubmit() {
 		console.log("NEW FEN IS: " + this.state.fenValue);
+		// this.newGame();
 		if (this.game.load(this.state.fenValue)) {
 			this.setState({
 				fen: this.game.fen(),
 				position: this.game.fen(),
 				history: [],
+				fensArray: [],
+				fensIndex: 0,
 			});
 			if (this.state.checked) {
 				this.setState({ suggestion: "Thinking..." });
