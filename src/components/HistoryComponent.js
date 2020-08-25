@@ -8,80 +8,27 @@ class History extends Component {
 		this.state = { checked: false };
 	}
 
-	// updateScroll() {
-	// 	let element = document.getElementById("historyCard");
-	// 	element.scrollTop = element.scrollHeight-1;
-	// }
-
 	renderHistory(item, index) {
-		// console.log(this.props.fensIndex);
-		if (index === 0) {
-			return (
-				// <span key={0}>
-				<>
-					{index / 2 + 1}.{" "}
-					<Button
-						key={0}
-						id={"histBtn" + index}
-						style={styles.button}
-						onClick={() => this.props.onHistoryClickHander(index)}
-						className="historyBtn"
-						active={
-							this.props.fensIndex === index + 1 ? true : false
-						}
-					>
-						{item}
-					</Button>
-					{/* </span> */}
-				</>
-			);
-		} else if (index % 2 === 0) {
-			return (
-				<>
-					<br />
-					{/* <span key={index}> */}
-					{index / 2 + 1}.
-					<Button
-						key={index}
-						id={"histBtn" + index}
-						style={styles.button}
-						onClick={() => this.props.onHistoryClickHander(index)}
-						className="historyBtn"
-						active={
-							this.props.fensIndex === index + 1 ? true : false
-						}
-					>
-						{item}
-					</Button>
-					{/* </span> */}
-				</>
-			);
-		} else {
-			return (
-				<>
-					{/* // {" "} */}
-					{/* // <span key={index}> */}{" "}
-					<Button
-						key={index}
-						id={"histBtn" + index}
-						// style={{ ...styles.button, marginRight: 22 }}
-						style={styles.button}
-						onClick={() => this.props.onHistoryClickHander(index)}
-						className="historyBtn"
-						active={
-							this.props.fensIndex === index + 1 ? true : false
-						}
-					>
-						{item}
-					</Button>
-					{/* // </span> */}
-				</>
-			);
-		}
+		let newIndex = index % 2 === 0 ? index / 2 + 1 + ". " : "";
+		return (
+			<React.Fragment>
+				{newIndex !== "" && index !== 0 ? <br /> : ""}
+				{newIndex}
+				<Button
+					key={0}
+					id={"histBtn" + index}
+					style={styles.button}
+					onClick={() => this.props.onHistoryClickHander(index)}
+					className="historyBtn"
+					active={this.props.fensIndex === index + 1 ? true : false}
+				>
+					{item}
+				</Button>
+			</React.Fragment>
+		);
 	}
 
 	render() {
-		// console.log("HISTORY WIDTH IS: " + this.props.width);
 		return (
 			<>
 				<div>
