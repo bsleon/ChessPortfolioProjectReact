@@ -17,10 +17,7 @@ class Board extends Component {
 		this.state = {
 			position:
 				"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-			// position:
-			// 	"r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
 			orientation: "white",
-			// fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
 			fen: "start",
 			dropSquareStyle: {},
 			squareStyles: {},
@@ -32,8 +29,6 @@ class Board extends Component {
 			fensArray: [],
 			fensIndex: 0,
 			dropOffBoard: "snapback",
-			// getPosition: "position",
-			// showSpareOnDrop: false,
 			deletePieceFlag: false,
 			btnState: "btn btn-default",
 			deleteBtnDisplay: { display: "none" },
@@ -51,7 +46,6 @@ class Board extends Component {
 	}
 
 	componentDidMount() {
-		// this.addEventListener(this._onchange);
 		document.addEventListener("keydown", this.handleKeyDown);
 		this.game = new Chess();
 		this.setState(() => ({
@@ -110,23 +104,14 @@ class Board extends Component {
 		if (this.game.validate_fen(fen)) {
 			this.game.load(fen);
 			let histArr = this.game_to_san(selectedOption.moves.split(" "));
-			// histArr = histArr.map((move) => this.move_to_san(move));
-			// console.log(histArr[1]);
-			// const attemptMove = this.move_to_san(histArr[1]);
-			// console.log(this.game_to_san(histArr));
-			// console.log(attemptMove);
-			// histArr = [...this.game_to_san(histArr)]
 			console.log(histArr);
 			this.setState({ history: [...histArr] });
 			this.fensMaker();
-			// this.newGame();
 
 			this.setState({
 				fen: selectedOption.value + " 0 1",
 				fenValue: selectedOption.value + " 0 1",
 				position: fen,
-				// history: this.game.history({ verbose: false }),
-				// history: selectedOption.moves.map(move => this.moveToSan(move)),
 			});
 		} else console.log("NOT A VALID FEN");
 	};
@@ -166,7 +151,6 @@ class Board extends Component {
 
 	onFenSubmit() {
 		console.log("NEW FEN IS: " + this.state.fenValue);
-		// this.newGame();
 		if (this.game.load(this.state.fenValue)) {
 			this.setState({
 				fen: this.game.fen(),
@@ -270,7 +254,7 @@ class Board extends Component {
 		if (sparePiecesFlag) {
 			this.setState({
 				sparePieces: sparePiecesFlag,
-				// dropOffBoard: "trash",
+				dropOffBoard: "trash",
 				deleteBtnDisplay: { display: "initial" },
 				clearBtnDisplay: { display: "initial" },
 				undoBtnDisplay: { display: "none" },
@@ -281,7 +265,7 @@ class Board extends Component {
 				deleteBtnDisplay: { display: "none" },
 				clearBtnDisplay: { display: "none" },
 				undoBtnDisplay: { display: "initial" },
-				// dropOffBoard: "snapback",
+				dropOffBoard: "snapback",
 			});
 		}
 		//check for legal position grey out button if not
@@ -292,6 +276,7 @@ class Board extends Component {
 		//FIX:
 		//when dragging the original king it disappears
 		//cant drag pieces off to delete them
+		//move king ontop of piece then click newGame bug
 	};
 
 	moveEnd = () => {
@@ -333,92 +318,92 @@ class Board extends Component {
 		}
 	};
 
-	isString(s) {
-		return typeof s === "string";
-	}
+	// isString(s) {
+	// 	return typeof s === "string";
+	// }
 
-	validSquare(square) {
-		return this.isString(square) && square.search(/^[a-h][1-8]$/) !== -1;
-	}
+	// validSquare(square) {
+	// 	return this.isString(square) && square.search(/^[a-h][1-8]$/) !== -1;
+	// }
 
-	validPieceCode(code) {
-		return this.isString(code) && code.search(/^[bw][KQRNBP]$/) !== -1;
-	}
+	// validPieceCode(code) {
+	// 	return this.isString(code) && code.search(/^[bw][KQRNBP]$/) !== -1;
+	// }
 
-	isPlainObject = function (obj) {
-		return Object.prototype.toString.call(obj) === "[object Object]";
-	};
+	// isPlainObject = function (obj) {
+	// 	return Object.prototype.toString.call(obj) === "[object Object]";
+	// };
 
-	validPositionObject(pos) {
-		// if (!$.isPlainObject(pos)) return false;
-		if (!this.isPlainObject(pos)) return false;
+	// validPositionObject(pos) {
+	// 	// if (!$.isPlainObject(pos)) return false;
+	// 	if (!this.isPlainObject(pos)) return false;
 
-		for (let i in pos) {
-			if (!pos.hasOwnProperty(i)) continue;
+	// 	for (let i in pos) {
+	// 		if (!pos.hasOwnProperty(i)) continue;
 
-			if (!this.validSquare(i) || !this.validPieceCode(pos[i])) {
-				return false;
-			}
-		}
+	// 		if (!this.validSquare(i) || !this.validPieceCode(pos[i])) {
+	// 			return false;
+	// 		}
+	// 	}
 
-		return true;
-	}
+	// 	return true;
+	// }
 
-	pieceCodeToFen(piece) {
-		let pieceCodeLetters = piece.split("");
+	// pieceCodeToFen(piece) {
+	// 	let pieceCodeLetters = piece.split("");
 
-		// white piece
-		if (pieceCodeLetters[0] === "w") {
-			return pieceCodeLetters[1].toUpperCase();
-		}
+	// 	// white piece
+	// 	if (pieceCodeLetters[0] === "w") {
+	// 		return pieceCodeLetters[1].toUpperCase();
+	// 	}
 
-		// black piece
-		return pieceCodeLetters[1].toLowerCase();
-	}
+	// 	// black piece
+	// 	return pieceCodeLetters[1].toLowerCase();
+	// }
 
-	squeezeFenEmptySquares(fen) {
-		return fen
-			.replace(/11111111/g, "8")
-			.replace(/1111111/g, "7")
-			.replace(/111111/g, "6")
-			.replace(/11111/g, "5")
-			.replace(/1111/g, "4")
-			.replace(/111/g, "3")
-			.replace(/11/g, "2");
-	}
+	// squeezeFenEmptySquares(fen) {
+	// 	return fen
+	// 		.replace(/11111111/g, "8")
+	// 		.replace(/1111111/g, "7")
+	// 		.replace(/111111/g, "6")
+	// 		.replace(/11111/g, "5")
+	// 		.replace(/1111/g, "4")
+	// 		.replace(/111/g, "3")
+	// 		.replace(/11/g, "2");
+	// }
 
-	objToFen(obj) {
-		let COLUMNS = "abcdefgh".split("");
-		if (!this.validPositionObject(obj)) return false;
+	// objToFen(obj) {
+	// 	let COLUMNS = "abcdefgh".split("");
+	// 	if (!this.validPositionObject(obj)) return false;
 
-		let fen = "";
+	// 	let fen = "";
 
-		let currentRow = 8;
-		for (let i = 0; i < 8; i++) {
-			for (let j = 0; j < 8; j++) {
-				let square = COLUMNS[j] + currentRow;
+	// 	let currentRow = 8;
+	// 	for (let i = 0; i < 8; i++) {
+	// 		for (let j = 0; j < 8; j++) {
+	// 			let square = COLUMNS[j] + currentRow;
 
-				// piece exists
-				if (obj.hasOwnProperty(square)) {
-					fen = fen + this.pieceCodeToFen(obj[square]);
-				} else {
-					// empty space
-					fen = fen + "1";
-				}
-			}
+	// 			// piece exists
+	// 			if (obj.hasOwnProperty(square)) {
+	// 				fen = fen + this.pieceCodeToFen(obj[square]);
+	// 			} else {
+	// 				// empty space
+	// 				fen = fen + "1";
+	// 			}
+	// 		}
 
-			if (i !== 7) {
-				fen = fen + "/";
-			}
+	// 		if (i !== 7) {
+	// 			fen = fen + "/";
+	// 		}
 
-			currentRow = currentRow - 1;
-		}
+	// 		currentRow = currentRow - 1;
+	// 	}
 
-		// squeeze the empty numbers together
-		fen = this.squeezeFenEmptySquares(fen);
+	// 	// squeeze the empty numbers together
+	// 	fen = this.squeezeFenEmptySquares(fen);
 
-		return fen;
-	}
+	// 	return fen;
+	// }
 
 	calcWidth = () => {
 		let chessBoard = document.getElementById("ChessBoard");
@@ -482,6 +467,43 @@ class Board extends Component {
 	// 	console.log("Dragging");
 	// };
 
+	getPosition = (position) => {
+		console.log(position);
+		this.objToFen(position);
+	};
+
+	objToFen = (position) => {
+		// console.log(typeof position);
+		// console.log(position);
+
+		if (this.state.sparePieces) {
+			let positionArr = [];
+			if (position) positionArr = Object.entries(position);
+			// console.log(positionArr);
+			this.game.clear();
+			positionArr.forEach((pos) => {
+				// console.log(pos);
+
+				this.game.put(
+					{
+						type: pos[1].charAt(1).toLowerCase(),
+						color: pos[1].charAt(0),
+					},
+					pos[0]
+				);
+			});
+			this.setState(() => ({
+				fen: this.game.fen(),
+				history: this.game.history({ verbose: false }),
+				position: this.game.fen(),
+				fensArray: [this.game.fen()],
+				fensIndex: 0,
+			}));
+			console.log(this.game.fen());
+		}
+		// this.game.put({ type: "k", color: "w" }, "h1");
+	};
+
 	onDrop = ({ sourceSquare, targetSquare, piece }) => {
 		console.log(sourceSquare + " " + targetSquare + " " + piece);
 		if (!this.state.sparePieces) {
@@ -508,12 +530,6 @@ class Board extends Component {
 		} else {
 			console.log("Drop off: " + this.state.dropOffBoard);
 
-			// console.log("dropped off");
-			// return;
-			// console.log(sourceSquare + " " + targetSquare + " " + piece);
-			// this.game.put({ type: this.game.PAWN, color: this.game.BLACK }, 'a5');
-			// this.game.put({ type: 'n', color: 'b' }, 'h1');
-
 			this.game.remove(sourceSquare);
 			this.game.put(
 				{
@@ -523,12 +539,16 @@ class Board extends Component {
 				targetSquare
 			);
 
+			this.getPosition();
+
 			this.setState(() => ({
 				fen: this.game.fen(),
 				position: this.game.fen(),
 				history: [],
 				// dropOffBoard: "trash",
 			}));
+
+			// this.getPosition();
 
 			// console.log(
 			// 	"type: " +
@@ -567,9 +587,7 @@ class Board extends Component {
 	};
 
 	deletePieces = () => {
-		// console.log("Delete pieces clicked! ");
 		let flag = this.state.deletePieceFlag;
-		// console.log(this.state.deletePieceFlag);
 		if (!flag && this.state.sparePieces) {
 			this.setState(() => ({
 				btnState: "btn btn-dark",
@@ -592,11 +610,6 @@ class Board extends Component {
 			history: [],
 		}));
 	};
-
-	// onPieceClick = (piece) => {
-	// 	console.log("Piece clicked is: " + piece);
-	// 	this.deletePieces();
-	// };
 
 	onSquareClick = (square) => {
 		if (this.state.deletePieceFlag) {
@@ -659,9 +672,7 @@ class Board extends Component {
 
 	messageParser = (message, numOfSuggestions) => {
 		let score = 0;
-		// let suggestion = "";
 		let multipvIndex = 0;
-		// let suggArr = [];
 
 		if (message.includes("multipv 1")) {
 			let messages = message.split(" ");
@@ -676,16 +687,12 @@ class Board extends Component {
 		}
 
 		if (message.includes("bestmove")) {
-			// console.log("contained stockfish!");
 			let msgArr = [];
 			msgArr.push(message);
-			// if (messageArray.length >= engineDepth + 1) {
-			// console.log(messageArray);
 			let engineSuggestion = msgArr[msgArr.length - 1].split(" ");
 			this.setState({
 				suggestion: engineSuggestion[1],
 			});
-			// console.log(messageArray[engineDepth + 1]);
 			let moveToSan = this.move_to_san(engineSuggestion[1]);
 			if (moveToSan) {
 				this.setState({ suggestion: moveToSan });
@@ -771,15 +778,10 @@ class Board extends Component {
 											backgroundColor: "#86A666",
 										}}
 										transitionDuration={150}
-										// width={this.state.width}
 										calcWidth={this.calcWidth}
-										// width={this.calcWidth}
 										dropOffBoard={this.state.dropOffBoard}
-										// getPosition={this.getPosition}
-										// onPieceClick={this.onPieceClick}
 										onSquareClick={this.onSquareClick}
-										// onPieceClick={this.onPieceClick}
-										// onDragOverSquare={this.onDragOverSquare}
+										getPosition={this.getPosition}
 									/>
 								)}
 								{/* Setup Chessboard */}
@@ -789,7 +791,7 @@ class Board extends Component {
 										onDrop={this.onDrop}
 										orientation={this.state.orientation}
 										position={this.state.position}
-										dropOffBoard="trash"
+										dropOffBoard={this.state.dropOffBoard}
 										lightSquareStyle={{
 											backgroundColor: "#FFFFDD",
 										}}
@@ -797,17 +799,11 @@ class Board extends Component {
 											backgroundColor: "#86A666",
 										}}
 										transitionDuration={150}
-										width={650}
-										// getPosition={this.getPosition}
-										// onPieceClick={this.onPieceClick}
+										calcWidth={this.calcWidth}
 										onSquareClick={this.onSquareClick}
+										getPosition={this.getPosition}
 									/>
 								)}
-
-								{/* <div id="engineMeter" style={{border: "solid 5px white"}}> */}
-									{/* <meter id="engineMeter"></meter> */}
-								{/* </div> */}
-
 							</div>
 
 							<div className="row">
@@ -942,31 +938,8 @@ class Board extends Component {
 								</div>
 							</div>
 						</div>
-						{/* 
-						<div className="col-1">
-							<meter id="engineMeter"></meter>
-						</div> */}
 
 						<div id="History" className="col-lg-4">
-							{/* <div className="row">
-								<div className="col-2">
-									<Switch
-										onChange={this.onEngineHandler}
-										checked={this.state.checked}
-										checkedIcon={false}
-										uncheckedIcon={false}
-										onColor="#629924"
-										offColor="#6B6B6B"
-										offHandleColor="#262421"
-										onHandleColor="#262421"
-									/>
-								</div>
-								<div className="col-10">
-									<div>Score: {this.state.score}</div>
-									<div>Move: {this.state.suggestion}</div>
-								</div>
-							</div> */}
-
 							<History
 								history={this.state.history}
 								width={this.calcWidth()}
@@ -1014,30 +987,6 @@ class Board extends Component {
 							<div className="col-12 col-lg-8">
 								<OpeningStats fen={this.state.fen} />
 							</div>
-							{/* <div className="col-4">
-								<div className="row ml-2">
-									<div className="col-12">
-										<Pgn
-											onChangePgnHandler={(text) =>
-												this.onChangePgnHandler(text)
-											}
-											onPgnSubmit={() =>
-												this.onPgnSubmit()
-											}
-										/>
-									</div>
-									<div className="col-12">
-										<Fen
-											onChangeFenHandler={(text) =>
-												this.onChangeFenHandler(text)
-											}
-											onFenSubmit={() =>
-												this.onFenSubmit()
-											}
-										/>
-									</div>
-								</div>
-							</div> */}
 						</div>
 					</Fade>
 				</div>

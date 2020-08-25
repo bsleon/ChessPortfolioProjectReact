@@ -30,7 +30,7 @@ class History extends Component {
 
 	render() {
 		return (
-			<>
+			<React.Fragment>
 				<div>
 					<Card id="engineCard">
 						<CardBody id="engineCardBody">
@@ -84,7 +84,7 @@ class History extends Component {
 						</CardBody>
 					</Card>
 				</div>
-			</>
+			</React.Fragment>
 		);
 	}
 }
