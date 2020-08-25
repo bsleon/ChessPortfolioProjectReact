@@ -39,7 +39,7 @@ class OpeningStats extends Component {
 			openingName: openingTitle,
 		});
 
-		openingInfo.moves.map((openMove) => {
+		openingInfo.moves.forEach((openMove) => {
 			const totalGames = openMove.white + openMove.black + openMove.draws;
 			const whitePerc = Math.ceil((openMove.white / totalGames) * 100);
 			const blackPerc = Math.ceil((openMove.black / totalGames) * 100);
