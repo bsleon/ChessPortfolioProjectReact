@@ -14,7 +14,7 @@ class History extends Component {
 	// }
 
 	renderHistory(item, index) {
-		console.log(this.props.fensIndex);
+		// console.log(this.props.fensIndex);
 		if (index === 0) {
 			return (
 				// <span key={0}>
