@@ -1010,8 +1010,8 @@ class Board extends Component {
 					</div>
 
 					<Fade in>
-						<div className="row mt-1">
-							<div className="col-8">
+						<div className="row mt-1 mr-1">
+							<div className="col-12 col-lg-8">
 								<OpeningStats fen={this.state.fen} />
 							</div>
 							{/* <div className="col-4">

@@ -40,7 +40,7 @@ class History extends Component {
 				<>
 					<br />
 					{/* <span key={index}> */}
-					{index / 2 + 1}.{" "}
+					{index / 2 + 1}.
 					<Button
 						key={index}
 						id={"histBtn" + index}
@@ -64,6 +64,7 @@ class History extends Component {
 					<Button
 						key={index}
 						id={"histBtn" + index}
+						// style={{ ...styles.button, marginRight: 22 }}
 						style={styles.button}
 						onClick={() => this.props.onHistoryClickHander(index)}
 						className="historyBtn"

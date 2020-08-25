@@ -141,7 +141,7 @@ body {
 }
 
 .Select-menu-outer {
-	background-color: transparent !important;
+	background-color: #111 !important;
 	border: solid 3px #343a40 !important;
 	color: #bbb !important;
 }
