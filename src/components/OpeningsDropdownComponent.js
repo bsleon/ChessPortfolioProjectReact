@@ -6,7 +6,7 @@ import openings from "../db/openings.json";
 class OpeningsDropdown extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { selectedOption: "", fenValue: "" };
+		this.state = { selectedOption: ""};
 	}
 
 	render() {

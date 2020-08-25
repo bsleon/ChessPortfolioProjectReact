@@ -2,18 +2,10 @@ import React, { Component } from "react";
 import { Button, Form, FormGroup, Label, Input, Col } from "reactstrap";
 
 class Fen extends Component {
-	// onChangeTextHandler(text) {
-	// 	this.setState({ fenValue: text.target.value });
-	// 	console.log(this.state.fenValue);
-	// }
-
 	render() {
 		return (
 			<Form>
 				<FormGroup>
-					{/* <Label htmlFor="fen" md={4}>
-						FEN:
-					</Label> */}
 					<Col md={15}>
 						<Input
 							placeholder="FEN:"

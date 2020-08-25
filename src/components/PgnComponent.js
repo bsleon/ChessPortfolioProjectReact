@@ -2,18 +2,10 @@ import React, { Component } from "react";
 import { Button, Form, FormGroup, Label, Input, Col } from "reactstrap";
 
 class Pgn extends Component {
-	// onChangeTextHandler(text) {
-	// 	this.setState({ pgnValue: text.target.value });
-	// 	console.log(this.state.pgnValue);
-	// }
-
 	render() {
 		return (
 			<Form>
 				<FormGroup>
-					{/* <Label htmlFor="pgn" md={4}>
-						PGN:
-					</Label> */}
 					<Col md={15}>
 						<Input
 							placeholder="PGN:"
