@@ -6,8 +6,13 @@ import { Fade } from "react-animation-components";
 import History from "./HistoryComponent";
 import Pgn from "./PgnComponent";
 import Fen from "./FenComponent";
-// import Switch from "react-switch";
 import OpeningsDropdown from "./OpeningsDropdownComponent";
+import {
+	Dropdown,
+	DropdownToggle,
+	DropdownMenu,
+	DropdownItem,
+} from "reactstrap";
 
 let stockfish = null;
 
@@ -42,6 +47,10 @@ class Board extends Component {
 			suggestion: "",
 			score: "",
 			selectedOption: null,
+			turnDropdownDisplay: { display: "none" },
+			isTurnDropdownOpen: false,
+			turnDropdownValue: "White's Turn",
+			turn: "w",
 		};
 	}
 
@@ -59,6 +68,26 @@ class Board extends Component {
 	componentWillUnmount() {
 		document.removeEventListener("keydown", this.handleKeyDown);
 	}
+
+	toggleTurn = () => {
+		this.setState({
+			isTurnDropdownOpen: !this.state.isTurnDropdownOpen,
+		});
+	};
+
+	changeTurnDropdownValue = (value) => {
+		let fen = this.game.fen();
+		if (value === "w") {
+			this.setState({ turnDropdownValue: "White's Turn", turn: "w" });
+			fen = fen.replace("b", "w");
+		} else {
+			this.setState({ turnDropdownValue: "Black's Turn", turn: "b" });
+			fen = fen.replace("w", "b");
+		}
+		this.game.load(fen);
+		// console.log("Value is: " + value);
+		// console.log("Turn is: " + this.game.turn());
+	};
 
 	onHistoryClickHander = (index) => {
 		console.log("INDEX: " + index);
@@ -258,6 +287,7 @@ class Board extends Component {
 				deleteBtnDisplay: { display: "initial" },
 				clearBtnDisplay: { display: "initial" },
 				undoBtnDisplay: { display: "none" },
+				turnDropdownDisplay: { display: "initial" },
 			});
 		} else {
 			this.setState({
@@ -266,6 +296,7 @@ class Board extends Component {
 				clearBtnDisplay: { display: "none" },
 				undoBtnDisplay: { display: "initial" },
 				dropOffBoard: "snapback",
+				turnDropdownDisplay: { display: "none" },
 			});
 		}
 		//check for legal position grey out button if not
@@ -468,7 +499,7 @@ class Board extends Component {
 	// };
 
 	getPosition = (position) => {
-		console.log(position);
+		// console.log(position);
 		this.objToFen(position);
 	};
 
@@ -499,7 +530,7 @@ class Board extends Component {
 				fensArray: [this.game.fen()],
 				fensIndex: 0,
 			}));
-			console.log(this.game.fen());
+			// console.log(this.game.fen());
 		}
 		// this.game.put({ type: "k", color: "w" }, "h1");
 	};
@@ -528,8 +559,6 @@ class Board extends Component {
 				fensIndex: this.state.fensArray.length,
 			}));
 		} else {
-			console.log("Drop off: " + this.state.dropOffBoard);
-
 			if (targetSquare) {
 				this.game.remove(sourceSquare);
 				this.game.put(
@@ -539,7 +568,7 @@ class Board extends Component {
 					},
 					targetSquare
 				);
-			} else this.getPosition();
+			} else if (piece !== "wK" && piece !== "bK") this.getPosition();
 
 			this.setState(() => ({
 				fen: this.game.fen(),
@@ -547,37 +576,6 @@ class Board extends Component {
 				history: [],
 				// dropOffBoard: "trash",
 			}));
-
-			// this.getPosition();
-
-			// console.log(
-			// 	"type: " +
-			// 		piece.slice(-1).toLowerCase() +
-			// 		" color: " +
-			// 		piece.slice(0, 1) +
-			// 		" " +
-			// 		targetSquare
-			// );
-
-			// this.getPosition();
-			// console.log("TARGET SQUARE!!! " + targetSquare);
-			// this.game.load(this.objToFen(this.state.position));
-			// if (targetSquare != null) {
-			// 	console.log("Regular move");
-			// 	this.game.load(this.objToFen(this.state.position));
-			// } else {
-			// 	console.log("Dropoff move");
-			// 	this.game.load(
-			// 		this.objToFen(this.state.position) + " w KQkq - 0 1"
-			// 	);
-			// }
-			// console.log("Game Fen: " + this.game.fen());
-
-			// this.setState(() => ({
-			// 	// fen: this.game.fen(),
-			// 	position: this.game.fen(),
-			// 	// dropOffBoard: "trash",
-			// }));
 		}
 
 		if (this.state.engineOn) {
@@ -977,6 +975,39 @@ class Board extends Component {
 											this.onChangeOpeningsHandler(text)
 										}
 									/>
+								</div>
+								<div className="col-12 mt-4">
+									<Dropdown
+										isOpen={this.state.isTurnDropdownOpen}
+										toggle={this.toggleTurn}
+										style={this.state.turnDropdownDisplay}
+									>
+										<DropdownToggle caret>
+											{this.state.turnDropdownValue}
+										</DropdownToggle>
+										<DropdownMenu>
+											<DropdownItem
+												onClick={() =>
+													this.changeTurnDropdownValue(
+														"w"
+													)
+												}
+												dropDownValue="w"
+											>
+												White's Turn
+											</DropdownItem>
+											<DropdownItem
+												onClick={() =>
+													this.changeTurnDropdownValue(
+														"b"
+													)
+												}
+												dropDownValue="b"
+											>
+												Black's Turn
+											</DropdownItem>
+										</DropdownMenu>
+									</Dropdown>
 								</div>
 							</div>
 						</div>
