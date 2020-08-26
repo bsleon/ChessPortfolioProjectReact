@@ -4,6 +4,7 @@ import "./App.css";
 // import "@chrisoakman/chessboardjs/dist/chessboard-1.0.0.min.css";
 // import "@chrisoakman/chessboardjs/dist/chessboard-1.0.0.min.js";
 import Header from "./components/HeaderComponent";
+import Footer from "./components/FooterComponent";
 import { Switch, Route, Redirect, BrowserRouter } from "react-router-dom";
 import Home from "./components/HomeComponent";
 import PlayComputer from "./components/PlayComputerComponent";
@@ -24,6 +25,7 @@ function App() {
 					<Route exact path="/contact" component={Contact} />
 					<Redirect to="/home" />
 				</Switch>
+				<Footer />
 			</React.Fragment>
 		</BrowserRouter>
 	);

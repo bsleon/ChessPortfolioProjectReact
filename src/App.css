@@ -156,6 +156,18 @@ body {
 	background-color: transparent !important;
 }
 
+.footer {
+	background-color: #0A0A0A;
+}
+
+.footer>a {
+	color:black;
+}
+
+.social>a {
+	font-size: 30px;
+}
+
 /* 
 .row {
 	border: green solid 5px;
