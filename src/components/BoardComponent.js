@@ -530,16 +530,16 @@ class Board extends Component {
 		} else {
 			console.log("Drop off: " + this.state.dropOffBoard);
 
-			this.game.remove(sourceSquare);
-			this.game.put(
-				{
-					type: piece.slice(-1).toLowerCase(),
-					color: piece.slice(0, 1),
-				},
-				targetSquare
-			);
-
-			this.getPosition();
+			if (targetSquare) {
+				this.game.remove(sourceSquare);
+				this.game.put(
+					{
+						type: piece.slice(-1).toLowerCase(),
+						color: piece.slice(0, 1),
+					},
+					targetSquare
+				);
+			} else this.getPosition();
 
 			this.setState(() => ({
 				fen: this.game.fen(),
