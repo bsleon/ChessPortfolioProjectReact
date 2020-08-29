@@ -34,6 +34,7 @@ class Board extends Component {
 			fensArray: [],
 			fensIndex: 0,
 			dropOffBoard: "snapback",
+			boardWidth: "600",
 			deletePieceFlag: false,
 			btnState: "btn btn-default",
 			deleteBtnDisplay: { display: "none" },
@@ -67,9 +68,9 @@ class Board extends Component {
 		}));
 	}
 
-	componentWillUnmount() {
-		document.removeEventListener("keydown", this.handleKeyDown);
-	}
+	// componentWillUnmount() {
+	// 	document.removeEventListener("keydown", this.handleKeyDown);
+	// }
 
 	toggleTurn = () => {
 		this.setState({
@@ -80,11 +81,19 @@ class Board extends Component {
 	changeTurnDropdownValue = (value) => {
 		let fen = this.game.fen();
 		if (value === "w") {
-			this.setState({ turnDropdownValue: "White's Turn", turn: "w" });
-			fen = fen.replace("b", "w");
+			fen = fen.replace(" b ", " w ");
+			this.setState({
+				turnDropdownValue: "White's Turn",
+				turn: "w",
+				fen: fen,
+			});
 		} else {
-			this.setState({ turnDropdownValue: "Black's Turn", turn: "b" });
-			fen = fen.replace("w", "b");
+			fen = fen.replace(" w ", " b ");
+			this.setState({
+				turnDropdownValue: "Black's Turn",
+				turn: "b",
+				fen: fen,
+			});
 		}
 		this.game.load(fen);
 		// console.log("Value is: " + value);
@@ -219,7 +228,7 @@ class Board extends Component {
 	undoMove = () => {
 		this.game.undo();
 		let i = 0;
-		let arr = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
+		let arr = [`rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR ${this.state.turn} KQkq - 0 1`];
 		if (this.state.fensIndex > 0) {
 			i = this.state.fensIndex - 1;
 			arr = [...this.state.fensArray];
@@ -270,6 +279,8 @@ class Board extends Component {
 			dropOffBoard: "snapback",
 			suggestion: "",
 			score: "",
+			turnDropdownValue: "White's Turn",
+			turn: "w",
 		});
 		if (this.state.checked) {
 			stockfish.terminate();
@@ -291,7 +302,7 @@ class Board extends Component {
 				undoBtnDisplay: { display: "none" },
 				turnDropdownDisplay: { display: "initial" },
 				setupBoardIcon: "fas fa-chess-knight",
-				setupBoardIconTitle: "Continue From Here"
+				setupBoardIconTitle: "Continue From Here",
 			});
 		} else {
 			this.setState({
@@ -457,6 +468,7 @@ class Board extends Component {
 			// let margin = marginLeft + marginRight;
 
 			let rect = chessBoard.getBoundingClientRect();
+			// this.setState({ boardWidth: rect.width - padding });
 			return rect.width - padding;
 		}
 		return 600;
@@ -761,7 +773,11 @@ class Board extends Component {
 		return (
 			<React.Fragment>
 				<div id="wrap">
-					<div id="main" className="container" onKeyDown={this.handleKeyPress}>
+					<div
+						id="main"
+						className="container"
+						onKeyDown={this.handleKeyPress}
+					>
 						<div className="row">
 							<div className="col-lg-8">
 								<div id="ChessBoard" className="col-12">
