@@ -68,10 +68,6 @@ class Board extends Component {
 		}));
 	}
 
-	// componentWillUnmount() {
-	// 	document.removeEventListener("keydown", this.handleKeyDown);
-	// }
-
 	toggleTurn = () => {
 		this.setState({
 			isTurnDropdownOpen: !this.state.isTurnDropdownOpen,
@@ -85,19 +81,33 @@ class Board extends Component {
 			this.setState({
 				turnDropdownValue: "White's Turn",
 				turn: "w",
-				fen: fen,
 			});
 		} else {
 			fen = fen.replace(" w ", " b ");
 			this.setState({
 				turnDropdownValue: "Black's Turn",
 				turn: "b",
-				fen: fen,
 			});
 		}
-		this.game.load(fen);
-		// console.log("Value is: " + value);
-		// console.log("Turn is: " + this.game.turn());
+		this.setState(() => ({
+			fen: fen,
+			position: fen,
+			fensArray: [
+				"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+			],
+			fensIndex: 0,
+		}));
+
+		fen = this.removeEnPassantFlag(fen);
+
+		if (this.game.load(fen)) console.log("fen loaded!");
+		else console.log(this.game.validate_fen(fen));
+	};
+
+	removeEnPassantFlag = (fen) => {
+		let tokens = fen.split(/\s+/);
+		if (tokens[3] !== "-") tokens[3] = "-";
+		return tokens.join(" ");
 	};
 
 	onHistoryClickHander = (index) => {
@@ -228,7 +238,9 @@ class Board extends Component {
 	undoMove = () => {
 		this.game.undo();
 		let i = 0;
-		let arr = [`rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR ${this.state.turn} KQkq - 0 1`];
+		let arr = [
+			`rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR ${this.state.turn} KQkq - 0 1`,
+		];
 		if (this.state.fensIndex > 0) {
 			i = this.state.fensIndex - 1;
 			arr = [...this.state.fensArray];
@@ -1043,7 +1055,7 @@ class Board extends Component {
 															"w"
 														)
 													}
-													dropDownValue="w"
+													// dropDownValue="w"
 												>
 													White's Turn
 												</DropdownItem>
@@ -1053,7 +1065,7 @@ class Board extends Component {
 															"b"
 														)
 													}
-													dropDownValue="b"
+													// dropDownValue="b"
 												>
 													Black's Turn
 												</DropdownItem>
