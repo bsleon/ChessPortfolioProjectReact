@@ -1,11 +1,12 @@
-html, body {
+/* html, body {
 	height: 100%;
-}
+} */
 
 body {
 	background-color: black !important;
 	color: grey !important;
 	font-family: "Font Awesome 5 Free" !important;
+	position: relative;
 }
 
 #ChessBoard {
@@ -172,12 +173,15 @@ body {
 
 .footer {
 	background-color: #0A0A0A;
-	position: relative;
-	margin-top: -150px;
+	position: absolute;
+	bottom: 100;
+	margin-top: 150px;
+	/* position: relative; */
+	/* margin-top: -150px; */
 	/* negative value of footer height */
-	height: 150px;
-	clear: both;
-	padding-top: 20px;
+	/* height: 150px; */
+	/* clear: both; */
+	/* padding-top: 20px; */
 }
 
 .footer>a {

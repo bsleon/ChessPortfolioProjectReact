@@ -5,7 +5,7 @@ function Footer(props) {
     return (
 		<React.Fragment>
 			<footer className="site-footer">
-				<div className="container-fluid footer mt-5 pt-4">
+				<div className="container-fluid footer pt-4">
 					<div className="row">
 						<div className="col-4 col-sm-2 col-m-4 offset-2">
 							<h5>Links</h5>
