@@ -11,11 +11,10 @@ class History extends Component {
 	renderHistory(item, index) {
 		let newIndex = index % 2 === 0 ? index / 2 + 1 + ". " : "";
 		return (
-			<React.Fragment>
+			<React.Fragment key={index}>
 				{newIndex !== "" && index !== 0 ? <br /> : ""}
 				{newIndex}
 				<Button
-					key={0}
 					id={"histBtn" + index}
 					style={styles.button}
 					onClick={() => this.props.onHistoryClickHander(index)}
