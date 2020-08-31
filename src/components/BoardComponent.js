@@ -279,8 +279,8 @@ class Board extends Component {
 		let arr = [];
 		arr.push("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 		this.setState({
-			fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-			position: this.game.fen(),
+			fen: arr[0],
+			position: arr[0],
 			history: [],
 			dropSquareStyle: {},
 			squareStyles: {},
@@ -378,93 +378,6 @@ class Board extends Component {
 		}
 	};
 
-	// isString(s) {
-	// 	return typeof s === "string";
-	// }
-
-	// validSquare(square) {
-	// 	return this.isString(square) && square.search(/^[a-h][1-8]$/) !== -1;
-	// }
-
-	// validPieceCode(code) {
-	// 	return this.isString(code) && code.search(/^[bw][KQRNBP]$/) !== -1;
-	// }
-
-	// isPlainObject = function (obj) {
-	// 	return Object.prototype.toString.call(obj) === "[object Object]";
-	// };
-
-	// validPositionObject(pos) {
-	// 	// if (!$.isPlainObject(pos)) return false;
-	// 	if (!this.isPlainObject(pos)) return false;
-
-	// 	for (let i in pos) {
-	// 		if (!pos.hasOwnProperty(i)) continue;
-
-	// 		if (!this.validSquare(i) || !this.validPieceCode(pos[i])) {
-	// 			return false;
-	// 		}
-	// 	}
-
-	// 	return true;
-	// }
-
-	// pieceCodeToFen(piece) {
-	// 	let pieceCodeLetters = piece.split("");
-
-	// 	// white piece
-	// 	if (pieceCodeLetters[0] === "w") {
-	// 		return pieceCodeLetters[1].toUpperCase();
-	// 	}
-
-	// 	// black piece
-	// 	return pieceCodeLetters[1].toLowerCase();
-	// }
-
-	// squeezeFenEmptySquares(fen) {
-	// 	return fen
-	// 		.replace(/11111111/g, "8")
-	// 		.replace(/1111111/g, "7")
-	// 		.replace(/111111/g, "6")
-	// 		.replace(/11111/g, "5")
-	// 		.replace(/1111/g, "4")
-	// 		.replace(/111/g, "3")
-	// 		.replace(/11/g, "2");
-	// }
-
-	// objToFen(obj) {
-	// 	let COLUMNS = "abcdefgh".split("");
-	// 	if (!this.validPositionObject(obj)) return false;
-
-	// 	let fen = "";
-
-	// 	let currentRow = 8;
-	// 	for (let i = 0; i < 8; i++) {
-	// 		for (let j = 0; j < 8; j++) {
-	// 			let square = COLUMNS[j] + currentRow;
-
-	// 			// piece exists
-	// 			if (obj.hasOwnProperty(square)) {
-	// 				fen = fen + this.pieceCodeToFen(obj[square]);
-	// 			} else {
-	// 				// empty space
-	// 				fen = fen + "1";
-	// 			}
-	// 		}
-
-	// 		if (i !== 7) {
-	// 			fen = fen + "/";
-	// 		}
-
-	// 		currentRow = currentRow - 1;
-	// 	}
-
-	// 	// squeeze the empty numbers together
-	// 	fen = this.squeezeFenEmptySquares(fen);
-
-	// 	return fen;
-	// }
-
 	calcWidth = () => {
 		let chessBoard = document.getElementById("ChessBoard");
 		if (chessBoard) {
@@ -486,65 +399,16 @@ class Board extends Component {
 		return 600;
 	};
 
-	// getPosition = (position) => {
-	// 	// console.log(position);
-	// 	// this.game.load(position);
-
-	// 	if (this.isPlainObject(this.state.position)) {
-	// 		console.log("getPosition Called, Was object Position: ");
-	// 		this.setState({
-	// 			position: this.objToFen(this.state.position) + " w KQkq - 0 1",
-	// 		});
-	// 		console.log("Position now: " + this.state.position);
-	// 	} else {
-	// 		console.log("getPosition Called, Was fen Position: ");
-	// 		this.setState({ position: position });
-	// 		console.log("Position now: " + this.state.position);
-	// 	}
-
-	// 	// if (this.isPlainObject(this.state.position)) {
-	// 	// 	console.log(
-	// 	// 		"getPosition Called, Was object Position: ",
-	// 	// 		this.objToFen(this.state.position)
-	// 	// 	);
-	// 	// } else {
-	// 	// 	console.log(
-	// 	// 		"getPosition Called, Was fen Position: ",
-	// 	// 		this.state.position
-	// 	// 	);
-	// 	// }
-	// 	// this.game.load(this.state.position);
-	// };
-
-	// onPieceClick = () => {
-	// 	// if (stockfish) stockfish.postMessage(`stop`);
-	// 	stockfish.terminate();
-	// 	console.log("Piece Clicked!");
-	// };
-
-	// onDragOverSquare = (square) => {
-	// 	// if (stockfish) stockfish.postMessage(`stop`);
-	// 	if (square != null && stockfish) stockfish.terminate();
-	// 	console.log("Dragging");
-	// };
-
 	getPosition = (position) => {
-		// console.log(position);
 		this.objToFen(position);
 	};
 
 	objToFen = (position) => {
-		// console.log(typeof position);
-		// console.log(position);
-
 		if (this.state.sparePieces) {
 			let positionArr = [];
 			if (position) positionArr = Object.entries(position);
-			// console.log(positionArr);
 			this.game.clear();
 			positionArr.forEach((pos) => {
-				// console.log(pos);
-
 				this.game.put(
 					{
 						type: pos[1].charAt(1).toLowerCase(),
@@ -560,9 +424,7 @@ class Board extends Component {
 				fensArray: [this.game.fen()],
 				fensIndex: 0,
 			}));
-			// console.log(this.game.fen());
 		}
-		// this.game.put({ type: "k", color: "w" }, "h1");
 	};
 
 	onDrop = ({ sourceSquare, targetSquare, piece }) => {
