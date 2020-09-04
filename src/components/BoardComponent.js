@@ -539,7 +539,7 @@ class Board extends Component {
 
 	engineAnalysis = (options) => {
 		const engineDepth = 25;
-		const moveTime = 15000;
+		const moveTime = 1000;
 		const numOfSuggestions = 5;
 
 		stockfish = new Worker(
